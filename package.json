@@ -16,7 +16,17 @@
     "verify": "node scripts/verify-all.js",
     "flatten": "node scripts/flatten.js",
     "snyk-protect": "snyk protect",
-    "prepare": "npm run snyk-protect"
+    "prepare": "npm run snyk-protect",
+
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:truffle": "truffle test ./test/*",
+    "start-blank": "rm -rf client/src && cp -rf barebones/src client/",
+    "client": "cd client && npm run start",
+    "console:development": "truffle console --network development",
+    "compile:development": "truffle compile --network development",
+    "migrate:development": "truffle migrate --reset --network development",
+    "compile:ropsten": "truffle compile --network ropsten",
+    "migrate:ropsten": "truffle migrate --reset --network ropsten"
   },
   "dependencies": {
     "decimal.js": "10.2.0",
@@ -26,7 +36,9 @@
     "truffle-contract": "3.0.8",
     "truffle-flattener": "1.4.2",
     "web3": "1.2.1",
-    "snyk": "^1.259.0"
+    "snyk": "^1.259.0",
+    "@truffle/hdwallet-provider": "^1.0.29",
+    "dotenv": "^8.2.0"
   },
   "snyk": true
 }
