@@ -15,8 +15,6 @@
     "deploy": "node scripts/deploy-one.js",
     "verify": "node scripts/verify-all.js",
     "flatten": "node scripts/flatten.js",
-    "prepare": "npm run snyk-protect",
-
     "test": "echo \"Error: no test specified\" && exit 1",
     "test:truffle": "truffle test ./test/*",
     "start-blank": "rm -rf client/src && cp -rf barebones/src client/",
