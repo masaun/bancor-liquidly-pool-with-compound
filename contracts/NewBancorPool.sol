@@ -15,17 +15,19 @@ contract NewBancorPool is BnStorage, BnConstants {
 
     address BNTtoken;
     address ERC20token;
-
+    address cDAI;  // cToken from compound pool
 
     constructor(
         address _contractRegistry,
         address _BNTtoken,
-        address _ERC20token 
+        address _ERC20token,
+        address _cDAI
     ) public {
         contractRegistry = ContractRegistry(_contractRegistry);
 
         BNTtoken = _BNTtoken;
         ERC20token = _ERC20token;
+        cDAI = _cDAI;  // cToken from compound pool
     }
 
 
