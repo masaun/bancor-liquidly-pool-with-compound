@@ -11,11 +11,10 @@
   "scripts": {
     "install": "node scripts/fix-modules.js",
     "build": "node scripts/rebuild-all.js",
-    "test": "node scripts/run-tests.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "deploy": "node scripts/deploy-one.js",
     "verify": "node scripts/verify-all.js",
     "flatten": "node scripts/flatten.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "test:truffle": "truffle test ./test/*",
     "start-blank": "rm -rf client/src && cp -rf barebones/src client/",
     "client": "cd client && npm run start",
