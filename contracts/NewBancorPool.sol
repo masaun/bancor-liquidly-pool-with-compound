@@ -39,8 +39,13 @@ contract NewBancorPool is BnStorage, BnConstants {
      * @notice - Integrate pools with lending protocols (e.g., lend pool tokens to Compound) to hedge risk for stakers 
      * @ref - https://docs.bancor.network/user-guides/token-integration/how-to-create-a-bancor-liquidity-pool
      **/
-    function integratePoolWithLendingProtocol() returns (bool) {
+    function integratePoolWithLendingProtocol(byte32 _contractName1, byte32 _contractName2) returns (bool) {
         // [In progress]: Integrate with lending pool of compound (cToken)
+        address token1;
+        address token2;
+
+        token1 = contractRegistry.addressOf(_contractName1);
+        token2 = contractRegistry.addressOf(_contractName2);
     }
 
     
