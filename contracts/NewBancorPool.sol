@@ -40,9 +40,7 @@ contract NewBancorPool is BnStorage, BnConstants {
      * @ref - https://docs.bancor.network/user-guides/token-integration/how-to-create-a-bancor-liquidity-pool
      **/
     function integratePoolWithLendingProtocol() returns (bool) {
-        // Integrate with lending pool of compound (cToken)
-
-
+        // [In progress]: Integrate with lending pool of compound (cToken)
     }
 
     
