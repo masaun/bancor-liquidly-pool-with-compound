@@ -13,8 +13,19 @@ contract NewBancorPool is BnStorage, BnConstants {
 
     ContractRegistry public contractRegistry;
 
-    constructor(address _contractRegistry) public {
+    address BNTtoken;
+    address ERC20token;
+
+
+    constructor(
+        address _contractRegistry,
+        address _BNTtoken,
+        address _ERC20token 
+    ) public {
         contractRegistry = ContractRegistry(_contractRegistry);
+
+        BNTtoken = _BNTtoken;
+        ERC20token = _ERC20token;
     }
 
 
