@@ -1,11 +1,11 @@
 pragma solidity 0.4.26;
 
 // Storage
-import "./storage/MpStorage.sol";
-import "./storage/MpConstants.sol";
+import "./storage/BnStorage.sol";
+import "./storage/BnConstants.sol";
 
 
-contract NewBancorPool is MpStorage, MpConstants {
+contract NewBancorPool is BnStorage, BnConstants {
 
     constructor() public {}
 
