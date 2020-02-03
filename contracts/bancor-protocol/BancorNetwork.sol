@@ -286,7 +286,7 @@ contract BancorNetwork is IBancorNetwork, TokenHolder, ContractRegistryClient, F
         amount = _amount;
 
         // verify that the number of elements is larger than 2 and odd
-        require(_path.length > 2 && _path.length % 2 == 1);
+        //require(_path.length > 2 && _path.length % 2 == 1);  // Commentout temporality
 
         // iterate over the conversion path
         for (uint256 i = 2; i < _path.length; i += 2) {
