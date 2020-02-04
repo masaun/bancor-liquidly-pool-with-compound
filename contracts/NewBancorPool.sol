@@ -46,7 +46,12 @@ contract NewBancorPool is BnStorage, BnConstants {
      * @notice - Integrate pools with lending protocols (e.g., lend pool tokens to Compound) to hedge risk for stakers 
      * @ref - https://docs.bancor.network/user-guides/token-integration/how-to-create-a-bancor-liquidity-pool
      **/
-    function integratePoolWithLendingProtocol(byte32 _contractName1, byte32 _contractName2) returns (bool) {
+    function integratePoolWithLendingProtocol(
+        byte32 _contractName1, 
+        byte32 _contractName2,
+        address receiverAddr,
+        uint256 amountOfSmartToken,
+    ) returns (bool) {
         // [In progress]: Integrate with lending pool of compound (cToken)
 
         // Step #1: Initial Setup
@@ -57,6 +62,8 @@ contract NewBancorPool is BnStorage, BnConstants {
         token2 = contractRegistry.addressOf(_contractName2);
 
         // Step #2: Smart Relay Token Deployment
+        smartToken.issue(msg.sender, amountOfSmartToken);
+        smartToken.transfer(receiverAddr, amountOfSmartToken);
 
         // Step #3: Converter Deployment
 
