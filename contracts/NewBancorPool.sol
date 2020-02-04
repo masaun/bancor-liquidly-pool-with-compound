@@ -10,7 +10,6 @@ import "./bancor-protocol/converter/BancorConverterRegistry.sol"; // Step #7: Co
 //import "./bancor-protocol/token/ERC20Token.sol";
 import './bancor-protocol/token/interfaces/IERC20Token.sol';
 
-
 // Storage
 import "./storage/BnStorage.sol";
 import "./storage/BnConstants.sol";
@@ -23,6 +22,8 @@ contract NewBancorPool is BnStorage, BnConstants {
     BancorConverter public bancorConverter;
     BancorConverterFactory public bancorConverterFactory;
     BancorConverterRegistry public bancorConverterRegistry;
+
+    IERC20Token public ierc20Token;
 
     address BNTtokenAddr;
     address ERC20tokenAddr;
@@ -76,7 +77,7 @@ contract NewBancorPool is BnStorage, BnConstants {
 
         // Step #1: Initial Setup
         address token1;
-        address token2;
+        //address token2;
 
         token1 = contractRegistry.addressOf(_contractName1);
         //token2 = contractRegistry.addressOf(_contractName2);
@@ -86,8 +87,9 @@ contract NewBancorPool is BnStorage, BnConstants {
         smartToken.transfer(receiverAddr, amountOfSmartToken);
 
         // Step #3: Converter Deployment
+        uint index = 0;
         uint32 reserveRatio = 10; // The case of this, I specify 10% as percentage of ratio. (After I need to divide by 100)
-        bancorConverter.addConnector(bancorConverter.reserveTokens, reserveRatio, true);
+        bancorConverter.addConnector(IERC20Token(ERC20tokenAddr), reserveRatio, true);
 
         // Step #4: Funding & Initial Supply
         uint256 fundedAmount = 100;
@@ -104,7 +106,7 @@ contract NewBancorPool is BnStorage, BnConstants {
                                                                    reserveRatio);
 
         // Step #7: Converters Registry Listing
-        bancorConverterRegistry.addConverter(_converterAddress);
+        bancorConverterRegistry.addConverter(IBancorConverter(_converterAddress));
     }
 
 }
