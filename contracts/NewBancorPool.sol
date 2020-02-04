@@ -29,6 +29,7 @@ contract NewBancorPool is BnStorage, BnConstants {
     address ERC20tokenAddr;
     address cDAItokenAddr;  // cToken from compound pool
 
+
     constructor(
         address _contractRegistry,
         address _BNTtokenAddr,
