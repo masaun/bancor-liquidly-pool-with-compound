@@ -6,7 +6,6 @@ import "./bancor-protocol/token/SmartToken.sol";                  // Step #2: Sm
 import "./bancor-protocol/converter/BancorConverter.sol";         // Step #3: Converter Deployment
 import "./bancor-protocol/converter/BancorConverterFactory.sol";  // Step #5: Activation 
 
-
 // Storage
 import "./storage/BnStorage.sol";
 import "./storage/BnConstants.sol";
@@ -85,8 +84,9 @@ contract NewBancorPool is BnStorage, BnConstants {
         bancorConverter.fund(fundedAmount);
 
         // Step #5: Activation
+        address _converterAddress;  // @notice - This variable is for receive return value of createConverter() below
         uint32 _maxConversionFee = 1;
-        bancorConverterFactory.createConverter(smartToken, 
+        _converterAddress = bancorConverterFactory.createConverter(smartToken, 
                                                contractRegistry, 
                                                _maxConversionFee, 
                                                IERC20(ERC20token), 
