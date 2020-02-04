@@ -1,9 +1,11 @@
 pragma solidity 0.4.26;
 
 // Bancor-Protocol
-import "./bancor-protocol/utility/ContractRegistry.sol";   // Step #1: Initial Setup
-import "./bancor-protocol/token/SmartToken.sol";           // Step #2: Smart Relay Token Deployment
-import "./bancor-protocol/converter/BancorConverter.sol";  // Step #3: Converter Deployment
+import "./bancor-protocol/utility/ContractRegistry.sol";          // Step #1: Initial Setup
+import "./bancor-protocol/token/SmartToken.sol";                  // Step #2: Smart Relay Token Deployment
+import "./bancor-protocol/converter/BancorConverter.sol";         // Step #3: Converter Deployment
+import "./bancor-protocol/converter/BancorConverterFactory.sol";  // Step #5: Activation 
+
 
 // Storage
 import "./storage/BnStorage.sol";
@@ -15,6 +17,7 @@ contract NewBancorPool is BnStorage, BnConstants {
     ContractRegistry public contractRegistry;
     SmartToken public smartToken;
     BancorConverter public bancorConverter;
+    BancorConverterFactory public bancorConverterFactory;
 
     address BNTtoken;
     address ERC20token;
@@ -26,7 +29,8 @@ contract NewBancorPool is BnStorage, BnConstants {
         address _ERC20token,
         address _cDAI,
         address _smartToken,
-        address _bancorConverter
+        address _bancorConverter,
+        address _bancorConverterFactory
     ) public {
         // Step #1: Initial Setup
         contractRegistry = ContractRegistry(_contractRegistry);
@@ -39,6 +43,9 @@ contract NewBancorPool is BnStorage, BnConstants {
 
         // Step #3: Converter Deployment
         bancorConverter = BancorConverter(_bancorConverter);
+
+        // Step #5: Activation
+        bancorConverterFactory = BancorConverterFactory(_bancorConverterFactory);
     }
 
 
@@ -70,15 +77,20 @@ contract NewBancorPool is BnStorage, BnConstants {
         smartToken.transfer(receiverAddr, amountOfSmartToken);
 
         // Step #3: Converter Deployment
-        uint ratio = 10 // The case of this, I specify 10% as percentage of ratio. (After I need to divide by 100)
-        bancorConverter.addConnector(ERC20token, ratio, true);
+        uint reserveRatio = 10 // The case of this, I specify 10% as percentage of ratio. (After I need to divide by 100)
+        bancorConverter.addConnector(ERC20token, reserveRatio, true);
 
         // Step #4: Funding & Initial Supply
         uint256 fundedAmount = 100;
         bancorConverter.fund(fundedAmount);
 
         // Step #5: Activation
-        
+        uint32 _maxConversionFee = 1;
+        bancorConverterFactory.createConverter(smartToken, 
+                                               contractRegistry, 
+                                               _maxConversionFee, 
+                                               IERC20(ERC20token), 
+                                               reserveRatio);
 
         // Step #6: Multisig Ownership
 
