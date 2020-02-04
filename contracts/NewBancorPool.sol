@@ -1,10 +1,9 @@
 pragma solidity 0.4.26;
 
 // Bancor-Protocol
-import "./bancor-protocol/utility/ContractRegistry.sol";  // Step #1: Initial Setup
-import "./bancor-protocol/token/SmartToken.sol";          // Step #2: Smart Relay Token Deployment
-
-
+import "./bancor-protocol/utility/ContractRegistry.sol";   // Step #1: Initial Setup
+import "./bancor-protocol/token/SmartToken.sol";           // Step #2: Smart Relay Token Deployment
+import "./bancor-protocol/converter/BancorConverter.sol";  // Step #3: Converter Deployment
 
 // Storage
 import "./storage/BnStorage.sol";
@@ -15,6 +14,7 @@ contract NewBancorPool is BnStorage, BnConstants {
 
     ContractRegistry public contractRegistry;
     SmartToken public smartToken;
+    BancorConverter public bancorConverter;
 
     address BNTtoken;
     address ERC20token;
@@ -25,7 +25,8 @@ contract NewBancorPool is BnStorage, BnConstants {
         address _BNTtoken,
         address _ERC20token,
         address _cDAI,
-        address _smartToken
+        address _smartToken,
+        address _bancorConverter
     ) public {
         // Step #1: Initial Setup
         contractRegistry = ContractRegistry(_contractRegistry);
@@ -35,6 +36,9 @@ contract NewBancorPool is BnStorage, BnConstants {
 
         // Step #2: Smart Relay Token Deployment
         smartToken = SmartToken(_smartToken);
+
+        // Step #3: Converter Deployment
+        bancorConverter = BancorConverter(_bancorConverter);
     }
 
 
@@ -50,7 +54,7 @@ contract NewBancorPool is BnStorage, BnConstants {
         byte32 _contractName1, 
         byte32 _contractName2,
         address receiverAddr,
-        uint256 amountOfSmartToken,
+        uint256 amountOfSmartToken
     ) returns (bool) {
         // [In progress]: Integrate with lending pool of compound (cToken)
 
@@ -66,6 +70,7 @@ contract NewBancorPool is BnStorage, BnConstants {
         smartToken.transfer(receiverAddr, amountOfSmartToken);
 
         // Step #3: Converter Deployment
+        bancorConverter.addConnector(ERC20token, 100000, true);  // The case of this, specified ratio is 10%
 
         // Step #4: Funding & Initial Supply
 
