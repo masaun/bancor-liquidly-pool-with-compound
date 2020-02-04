@@ -48,11 +48,25 @@ contract NewBancorPool is BnStorage, BnConstants {
      **/
     function integratePoolWithLendingProtocol(byte32 _contractName1, byte32 _contractName2) returns (bool) {
         // [In progress]: Integrate with lending pool of compound (cToken)
+
+        // Step #1: Initial Setup
         address token1;
         address token2;
 
         token1 = contractRegistry.addressOf(_contractName1);
         token2 = contractRegistry.addressOf(_contractName2);
+
+        // Step #2: Smart Relay Token Deployment
+
+        // Step #3: Converter Deployment
+
+        // Step #4: Funding & Initial Supply
+
+        // Step #5: Activation
+
+        // Step #6: Multisig Ownership
+
+        // Step #7: Converters Registry Listing
     }
 
     
