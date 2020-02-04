@@ -1,7 +1,9 @@
 pragma solidity 0.4.26;
 
 // Bancor-Protocol
-import "./bancor-protocol/utility/ContractRegistry.sol";
+import "./bancor-protocol/utility/ContractRegistry.sol";  // Step #1: Initial Setup
+import "./bancor-protocol/token/SmartToken.sol";          // Step #2: Smart Relay Token Deployment
+
 
 
 // Storage
@@ -12,6 +14,7 @@ import "./storage/BnConstants.sol";
 contract NewBancorPool is BnStorage, BnConstants {
 
     ContractRegistry public contractRegistry;
+    SmartToken public smartToken;
 
     address BNTtoken;
     address ERC20token;
@@ -21,13 +24,17 @@ contract NewBancorPool is BnStorage, BnConstants {
         address _contractRegistry,
         address _BNTtoken,
         address _ERC20token,
-        address _cDAI
+        address _cDAI,
+        address _smartToken
     ) public {
+        // Step #1: Initial Setup
         contractRegistry = ContractRegistry(_contractRegistry);
-
         BNTtoken = _BNTtoken;
         ERC20token = _ERC20token;
         cDAI = _cDAI;  // cToken from compound pool
+
+        // Step #2: Smart Relay Token Deployment
+        smartToken = SmartToken(_smartToken);
     }
 
 
