@@ -7,6 +7,10 @@ import "./bancor-protocol/converter/BancorConverter.sol";         // Step #3: Co
 import "./bancor-protocol/converter/BancorConverterFactory.sol";  // Step #5: Activation and Step #6: Multisig Ownership
 import "./bancor-protocol/converter/BancorConverterRegistry.sol"; // Step #7: Converters Registry Listing
 
+//import "./bancor-protocol/token/ERC20Token.sol";
+import './bancor-protocol/token/interfaces/IERC20Token.sol';
+
+
 // Storage
 import "./storage/BnStorage.sol";
 import "./storage/BnConstants.sol";
@@ -20,15 +24,15 @@ contract NewBancorPool is BnStorage, BnConstants {
     BancorConverterFactory public bancorConverterFactory;
     BancorConverterRegistry public bancorConverterRegistry;
 
-    address BNTtoken;
-    address ERC20token;
-    address cDAI;  // cToken from compound pool
+    address BNTtokenAddr;
+    address ERC20tokenAddr;
+    address cDAItokenAddr;  // cToken from compound pool
 
     constructor(
         address _contractRegistry,
-        address _BNTtoken,
-        address _ERC20token,
-        address _cDAI,
+        address _BNTtokenAddr,
+        address _ERC20tokenAddr,
+        address _cDAItokenAddr,
         address _smartToken,
         address _bancorConverter,
         address _bancorConverterFactory,
@@ -36,9 +40,9 @@ contract NewBancorPool is BnStorage, BnConstants {
     ) public {
         // Step #1: Initial Setup
         contractRegistry = ContractRegistry(_contractRegistry);
-        BNTtoken = _BNTtoken;
-        ERC20token = _ERC20token;
-        cDAI = _cDAI;  // cToken from compound pool
+        BNTtokenAddr = _BNTtokenAddr;
+        ERC20tokenAddr = _ERC20tokenAddr;
+        cDAItokenAddr = _cDAItokenAddr;  // cToken from compound pool
 
         // Step #2: Smart Relay Token Deployment
         smartToken = SmartToken(_smartToken);
@@ -60,14 +64,14 @@ contract NewBancorPool is BnStorage, BnConstants {
 
     /***
      * @notice - Integrate pools with lending protocols (e.g., lend pool tokens to Compound) to hedge risk for stakers 
-     * @ref - https://docs.bancor.network/user-guides/token-integration/how-to-create-a-bancor-liquidity-pool
+     * https://docs.bancor.network/user-guides/token-integration/how-to-create-a-bancor-liquidity-pool
      **/
     function integratePoolWithLendingProtocol(
-        byte32 _contractName1, 
-        byte32 _contractName2,
+        bytes32 _contractName1, 
+        //string _contractName2,
         address receiverAddr,
         uint256 amountOfSmartToken
-    ) returns (bool) {
+    ) public returns (bool) {
         // [In progress]: Integrate with lending pool of compound (cToken)
 
         // Step #1: Initial Setup
@@ -75,15 +79,15 @@ contract NewBancorPool is BnStorage, BnConstants {
         address token2;
 
         token1 = contractRegistry.addressOf(_contractName1);
-        token2 = contractRegistry.addressOf(_contractName2);
+        //token2 = contractRegistry.addressOf(_contractName2);
 
         // Step #2: Smart Relay Token Deployment
         smartToken.issue(msg.sender, amountOfSmartToken);
         smartToken.transfer(receiverAddr, amountOfSmartToken);
 
         // Step #3: Converter Deployment
-        uint reserveRatio = 10 // The case of this, I specify 10% as percentage of ratio. (After I need to divide by 100)
-        bancorConverter.addConnector(ERC20token, reserveRatio, true);
+        uint32 reserveRatio = 10; // The case of this, I specify 10% as percentage of ratio. (After I need to divide by 100)
+        bancorConverter.addConnector(bancorConverter.reserveTokens, reserveRatio, true);
 
         // Step #4: Funding & Initial Supply
         uint256 fundedAmount = 100;
@@ -94,10 +98,10 @@ contract NewBancorPool is BnStorage, BnConstants {
         address _converterAddress;  // @notice - This variable is for receiving return value of createConverter() below
         uint32 _maxConversionFee = 1;
         _converterAddress = bancorConverterFactory.createConverter(smartToken, 
-                                               contractRegistry, 
-                                               _maxConversionFee, 
-                                               IERC20(ERC20token), 
-                                               reserveRatio);
+                                                                   contractRegistry, 
+                                                                   _maxConversionFee, 
+                                                                   IERC20Token(ERC20tokenAddr), 
+                                                                   reserveRatio);
 
         // Step #7: Converters Registry Listing
         bancorConverterRegistry.addConverter(_converterAddress);
