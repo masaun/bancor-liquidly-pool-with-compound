@@ -4,7 +4,8 @@ pragma solidity 0.4.26;
 import "./bancor-protocol/utility/ContractRegistry.sol";          // Step #1: Initial Setup
 import "./bancor-protocol/token/SmartToken.sol";                  // Step #2: Smart Relay Token Deployment
 import "./bancor-protocol/converter/BancorConverter.sol";         // Step #3: Converter Deployment
-import "./bancor-protocol/converter/BancorConverterFactory.sol";  // Step #5: Activation 
+import "./bancor-protocol/converter/BancorConverterFactory.sol";  // Step #5: Activation and Step #6: Multisig Ownership
+import "./bancor-protocol/converter/BancorConverterRegistry.sol"; // Step #7: Converters Registry Listing
 
 // Storage
 import "./storage/BnStorage.sol";
@@ -17,6 +18,7 @@ contract NewBancorPool is BnStorage, BnConstants {
     SmartToken public smartToken;
     BancorConverter public bancorConverter;
     BancorConverterFactory public bancorConverterFactory;
+    BancorConverterRegistry public bancorConverterRegistry;
 
     address BNTtoken;
     address ERC20token;
@@ -29,7 +31,8 @@ contract NewBancorPool is BnStorage, BnConstants {
         address _cDAI,
         address _smartToken,
         address _bancorConverter,
-        address _bancorConverterFactory
+        address _bancorConverterFactory,
+        address _bancorConverterRegistry
     ) public {
         // Step #1: Initial Setup
         contractRegistry = ContractRegistry(_contractRegistry);
@@ -43,8 +46,11 @@ contract NewBancorPool is BnStorage, BnConstants {
         // Step #3: Converter Deployment
         bancorConverter = BancorConverter(_bancorConverter);
 
-        // Step #5: Activation
+        // Step #5: Activation and Step #6: Multisig Ownership
         bancorConverterFactory = BancorConverterFactory(_bancorConverterFactory);
+
+        // Step #7: Converters Registry Listing
+        bancorConverterRegistry = BancorConverterRegistry(_bancorConverterRegistry);
     }
 
 
@@ -84,7 +90,8 @@ contract NewBancorPool is BnStorage, BnConstants {
         bancorConverter.fund(fundedAmount);
 
         // Step #5: Activation
-        address _converterAddress;  // @notice - This variable is for receive return value of createConverter() below
+        // Step #6: Multisig Ownership
+        address _converterAddress;  // @notice - This variable is for receiving return value of createConverter() below
         uint32 _maxConversionFee = 1;
         _converterAddress = bancorConverterFactory.createConverter(smartToken, 
                                                contractRegistry, 
@@ -92,11 +99,8 @@ contract NewBancorPool is BnStorage, BnConstants {
                                                IERC20(ERC20token), 
                                                reserveRatio);
 
-        // Step #6: Multisig Ownership
-
         // Step #7: Converters Registry Listing
+        bancorConverterRegistry.addConverter(_converterAddress);
     }
-
-    
 
 }
