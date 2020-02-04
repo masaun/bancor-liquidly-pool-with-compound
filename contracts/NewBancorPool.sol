@@ -70,11 +70,15 @@ contract NewBancorPool is BnStorage, BnConstants {
         smartToken.transfer(receiverAddr, amountOfSmartToken);
 
         // Step #3: Converter Deployment
-        bancorConverter.addConnector(ERC20token, 100000, true);  // The case of this, specified ratio is 10%
+        uint ratio = 10 // The case of this, I specify 10% as percentage of ratio. (After I need to divide by 100)
+        bancorConverter.addConnector(ERC20token, ratio, true);
 
         // Step #4: Funding & Initial Supply
+        uint256 fundedAmount = 100;
+        bancorConverter.fund(fundedAmount);
 
         // Step #5: Activation
+        
 
         // Step #6: Multisig Ownership
 
