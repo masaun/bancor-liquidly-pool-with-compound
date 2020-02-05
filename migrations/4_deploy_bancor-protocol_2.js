@@ -6,10 +6,10 @@ const _maxConversionFee = 1
 const _reserveToken = '0xad6d458402f60fd3bd25163575031acdce07538d'  // DAI on Ropsten
 const _reserveRatio = 10
 
-var BancorConverterFactory = artifacts.require("BancorConverterFactory");
+//var BancorConverterFactory = artifacts.require("BancorConverterFactory");
 
 
 module.exports = async function(deployer) {
   await deployer.deploy(BancorConverter, _token, _registry, _maxConversionFee, _reserveToken, _reserveRatio);
-  await deployer.deploy(BancorConverterFactory);
+  //await deployer.deploy(BancorConverterFactory);
 };

@@ -18,10 +18,11 @@
     "test:truffle": "truffle test ./test/*",
     "start-blank": "rm -rf client/src && cp -rf barebones/src client/",
     "client": "cd client && npm run start",
-    "console:development": "truffle console --network development",
-    "compile:development": "truffle compile --network development",
+    "console:development": "truffle console --reset --network development",
+    "compile:development": "truffle compile --reset --network development",
     "migrate:development": "truffle migrate --reset --network development",
-    "compile:ropsten": "truffle compile --network ropsten",
+    "console:ropsten": "truffle console --reset --network ropsten",
+    "compile:ropsten": "truffle compile --reset --network ropsten",
     "migrate:ropsten": "truffle migrate --reset --network ropsten"
   },
   "dependencies": {
