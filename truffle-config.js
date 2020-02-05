@@ -12,9 +12,8 @@ module.exports = {
         //return new HDWalletProvider("Replace here with your mnemonic word", process.env.RPC_URL_ROPSTEN)
       },
       network_id: '3',
-      gas:         2000000,      // Gas limit used for deploys
-      //gas:         6721975,      // Gas limit used for deploys
-      gasPrice:    20000000000,
+      //gas:         4600000,      // Gas limit used for deploys
+      //gasPrice:    20000000000,
       skipDryRun:  true
     },
     development: {

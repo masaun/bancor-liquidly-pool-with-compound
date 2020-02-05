@@ -90,7 +90,9 @@ contract NewBancorPool is BnStorage, BnConstants {
         // Step #3: Converter Deployment
         uint index = 0;
         uint32 reserveRatio = 10; // The case of this, I specify 10% as percentage of ratio. (After I need to divide by 100)
+        uint32 _conversionFee = 1000
         bancorConverter.addConnector(IERC20Token(ERC20tokenAddr), reserveRatio, true);
+        bancorConverter.setConversionFee(_conversionFee);
 
         // Step #4: Funding & Initial Supply
         uint256 fundedAmount = 100;
