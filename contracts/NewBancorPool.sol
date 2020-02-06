@@ -10,12 +10,15 @@ import "./bancor-protocol/converter/BancorConverterRegistry.sol"; // Step #7: Co
 //import "./bancor-protocol/token/ERC20Token.sol";
 import './bancor-protocol/token/interfaces/IERC20Token.sol';
 
+import './bancor-protocol/utility/Managed.sol';
+
+
 // Storage
 import "./storage/BnStorage.sol";
 import "./storage/BnConstants.sol";
 
 
-contract NewBancorPool is BnStorage, BnConstants {
+contract NewBancorPool is BnStorage, BnConstants, Managed {
 
     ContractRegistry public contractRegistry;
     SmartToken public smartToken;
@@ -113,5 +116,96 @@ contract NewBancorPool is BnStorage, BnConstants {
         // Step #7: Converters Registry Listing
         bancorConverterRegistry.addConverter(IBancorConverter(_converterAddress));
     }
+
+
+
+
+    /***********************************************************
+     * @notice - Internal function from BancorConverter.sol
+     ***********************************************************/
+    uint32 private constant RATIO_RESOLUTION = 1000000;
+    uint64 private constant CONVERSION_FEE_RESOLUTION = 1000000;
+
+    /**
+      * @dev version number
+    */
+    uint16 public version = 25;
+
+    IWhitelist public conversionWhitelist;          // whitelist contract with list of addresses that are allowed to use the converter
+    IERC20Token[] public reserveTokens;             // ERC20 standard token addresses (prior version 17, use 'connectorTokens' instead)
+
+    struct Reserve {
+        uint256 virtualBalance;         // reserve virtual balance
+        uint32 ratio;                   // reserve ratio, represented in ppm, 1-1000000
+        bool isVirtualBalanceEnabled;   // true if virtual balance is enabled, false if not
+        bool isSaleEnabled;             // is sale of the reserve token enabled, can be set by the owner
+        bool isSet;                     // used to tell if the mapping element is defined
+    }
+    mapping (address => Reserve) public reserves;   // reserve token addresses -> reserve data (prior version 17, use 'connectors' instead)
+    
+    uint32 private totalReserveRatio = 0;           // used to efficiently prevent increasing the total reserve ratio above 100%
+    uint32 public maxConversionFee = 0;             // maximum conversion fee for the lifetime of the contract,
+                                                    // represented in ppm, 0...1000000 (0 = no fee, 100 = 0.01%, 1000000 = 100%)
+    uint32 public conversionFee = 0;                // current conversion fee, represented in ppm, 0...maxConversionFee
+    bool public conversionsEnabled = true;          // deprecated, backward compatibility
+
+
+    event Conversion(
+        address indexed _fromToken,
+        address indexed _toToken,
+        address indexed _trader,
+        uint256 _amount,
+        uint256 _return,
+        int256 _conversionFee
+    );
+
+    // validates reserve ratio
+    modifier validReserveRatio(uint32 _ratio) {
+        require(_ratio > 0 && _ratio <= RATIO_RESOLUTION);
+        _;
+    }
+
+
+    function addConnector(IERC20Token _token, uint32 _weight, bool /*_enableVirtualBalance*/) public {
+        addReserve(_token, _weight);
+    }
+
+    function addReserve(IERC20Token _token, uint32 _ratio)
+        public
+        ownerOnly
+        //inactive
+        //validAddress(_token)
+        //notThis(_token)
+        validReserveRatio(_ratio)
+    {
+        //require(_token != token && !reserves[_token].isSet && totalReserveRatio + _ratio <= RATIO_RESOLUTION); // validate input
+
+        reserves[_token].ratio = _ratio;
+        reserves[_token].isVirtualBalanceEnabled = false;
+        reserves[_token].virtualBalance = 0;
+        reserves[_token].isSaleEnabled = true;
+        reserves[_token].isSet = true;
+        reserveTokens.push(_token);
+        totalReserveRatio += _ratio;
+    }    
+
+
+    /**
+      * @dev updates the current conversion fee
+      * can only be called by the manager
+      * 
+      * @param _conversionFee new conversion fee, represented in ppm
+    */
+    // event ConversionFeeUpdate(uint32 _prevFee, uint32 _newFee);
+
+    // function setConversionFee(uint32 _conversionFee)
+    //     public
+    //     ownerOrManagerOnly
+    // {
+    //     require(_conversionFee >= 0 && _conversionFee <= maxConversionFee);
+    //     emit ConversionFeeUpdate(conversionFee, _conversionFee);
+    //     conversionFee = _conversionFee;
+    // }
+
 
 }
