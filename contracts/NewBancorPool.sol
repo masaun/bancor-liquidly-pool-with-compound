@@ -36,10 +36,12 @@ contract NewBancorPool is BnStorage, BnConstants {
         address _ERC20tokenAddr,
         address _cDAItokenAddr,
         address _smartToken,
-        address _bancorConverter,
+        //address _bancorConverter,
         address _bancorConverterFactory,
         address _bancorConverterRegistry
-    ) public {
+    ) 
+        public
+    {
         // Step #1: Initial Setup
         contractRegistry = ContractRegistry(_contractRegistry);
         BNTtokenAddr = _BNTtokenAddr;
@@ -50,7 +52,7 @@ contract NewBancorPool is BnStorage, BnConstants {
         smartToken = SmartToken(_smartToken);
 
         // Step #3: Converter Deployment
-        bancorConverter = BancorConverter(_bancorConverter);
+        //bancorConverter = BancorConverter(_bancorConverter);
 
         // Step #5: Activation and Step #6: Multisig Ownership
         bancorConverterFactory = BancorConverterFactory(_bancorConverterFactory);
@@ -90,7 +92,7 @@ contract NewBancorPool is BnStorage, BnConstants {
         // Step #3: Converter Deployment
         uint index = 0;
         uint32 reserveRatio = 10; // The case of this, I specify 10% as percentage of ratio. (After I need to divide by 100)
-        uint32 _conversionFee = 1000
+        uint32 _conversionFee = 1000;  // Fee: 1,000 (0.1%)
         bancorConverter.addConnector(IERC20Token(ERC20tokenAddr), reserveRatio, true);
         bancorConverter.setConversionFee(_conversionFee);
 
