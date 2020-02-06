@@ -4,7 +4,7 @@ pragma solidity 0.4.26;
 import "./bancor-protocol/utility/ContractRegistry.sol";          // Step #1: Initial Setup
 import "./bancor-protocol/token/SmartToken.sol";                  // Step #2: Smart Relay Token Deployment
 //import "./bancor-protocol/converter/BancorConverter.sol";         // Step #3: Converter Deployment
-import "./bancor-protocol/converter/BancorConverterFactory.sol";  // Step #5: Activation and Step #6: Multisig Ownership
+//import "./bancor-protocol/converter/BancorConverterFactory.sol";  // Step #5: Activation and Step #6: Multisig Ownership
 import "./bancor-protocol/converter/BancorConverterRegistry.sol"; // Step #7: Converters Registry Listing
 
 //import "./bancor-protocol/token/ERC20Token.sol";
@@ -24,7 +24,7 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
     ContractRegistry public contractRegistry;
     SmartToken public smartToken;
     //BancorConverter public bancorConverter;
-    BancorConverterFactory public bancorConverterFactory;
+    //BancorConverterFactory public bancorConverterFactory;
     BancorConverterRegistry public bancorConverterRegistry;
 
     BancorFormula public bancorFormula;
@@ -45,7 +45,7 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
         address _cDAItokenAddr,
         address _smartToken,
         //address _bancorConverter,
-        address _bancorConverterFactory,
+        //address _bancorConverterFactory,
         address _bancorConverterRegistry,
         address _bancorFormula
     ) 
@@ -68,7 +68,7 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
         //bancorConverter = BancorConverter(_bancorConverter);
 
         // Step #5: Activation and Step #6: Multisig Ownership
-        bancorConverterFactory = BancorConverterFactory(_bancorConverterFactory);
+        //bancorConverterFactory = BancorConverterFactory(_bancorConverterFactory);
 
         // Step #7: Converters Registry Listing
         bancorConverterRegistry = BancorConverterRegistry(_bancorConverterRegistry);
@@ -120,11 +120,11 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
         // Step #6: Multisig Ownership
         address _converterAddress;  // @notice - This variable is for receiving return value of createConverter() below
         uint32 _maxConversionFee = 1;
-        _converterAddress = bancorConverterFactory.createConverter(smartToken, 
-                                                                   contractRegistry, 
-                                                                   _maxConversionFee, 
-                                                                   token, 
-                                                                   reserveRatio);
+        // _converterAddress = bancorConverterFactory.createConverter(smartToken, 
+        //                                                            contractRegistry, 
+        //                                                            _maxConversionFee, 
+        //                                                            token, 
+        //                                                            reserveRatio);
 
         // Step #7: Converters Registry Listing
         bancorConverterRegistry.addConverter(IBancorConverter(_converterAddress));

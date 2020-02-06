@@ -29,7 +29,7 @@ module.exports = function(deployer) {
     _cDAI,
     _smartToken,
     //_bancorConverter,
-    _bancorConverterFactory,
+    //_bancorConverterFactory,
     _bancorConverterRegistry,
     _bancorFormula    
   );
