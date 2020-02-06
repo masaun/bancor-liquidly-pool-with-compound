@@ -12,10 +12,10 @@ const _cDAI = '0x2b536482a01e620ee111747f8334b395a42a555e'
 
 var SmartToken = artifacts.require("SmartToken")
 //var BancorConverter = artifacts.require("BancorConverter")
-var BancorConverterFactory = artifacts.require("BancorConverterFactory")
+//var BancorConverterFactory = artifacts.require("BancorConverterFactory")
 const _smartToken = SmartToken.address
 //const _bancorConverter = BancorConverter.address
-const _bancorConverterFactory = BancorConverterFactory.address
+//const _bancorConverterFactory = BancorConverterFactory.address
 const _bancorConverterRegistry = '0x8bf88CFed154b0f6dbdC64cb35c829698b26c869'
 const _bancorFormula = '0xbD2D011492E3b7bdc0d27b4aB2053f58FF6459d3'
 
