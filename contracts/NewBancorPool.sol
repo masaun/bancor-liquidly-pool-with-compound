@@ -19,8 +19,8 @@ contract NewBancorPool is BnStorage, BnConstants {
 
     ContractRegistry public contractRegistry;
     SmartToken public smartToken;
-    BancorConverter public bancorConverter;
-    BancorConverterFactory public bancorConverterFactory;
+    //BancorConverter public bancorConverter;
+    //BancorConverterFactory public bancorConverterFactory;
     BancorConverterRegistry public bancorConverterRegistry;
 
     IERC20Token public ierc20Token;
@@ -37,7 +37,7 @@ contract NewBancorPool is BnStorage, BnConstants {
         address _cDAItokenAddr,
         address _smartToken,
         //address _bancorConverter,
-        address _bancorConverterFactory,
+        //address _bancorConverterFactory,
         address _bancorConverterRegistry
     ) 
         public
@@ -55,7 +55,7 @@ contract NewBancorPool is BnStorage, BnConstants {
         //bancorConverter = BancorConverter(_bancorConverter);
 
         // Step #5: Activation and Step #6: Multisig Ownership
-        bancorConverterFactory = BancorConverterFactory(_bancorConverterFactory);
+        //bancorConverterFactory = BancorConverterFactory(_bancorConverterFactory);
 
         // Step #7: Converters Registry Listing
         bancorConverterRegistry = BancorConverterRegistry(_bancorConverterRegistry);
@@ -90,25 +90,25 @@ contract NewBancorPool is BnStorage, BnConstants {
         smartToken.transfer(receiverAddr, amountOfSmartToken);
 
         // Step #3: Converter Deployment
-        uint index = 0;
-        uint32 reserveRatio = 10; // The case of this, I specify 10% as percentage of ratio. (After I need to divide by 100)
-        uint32 _conversionFee = 1000;  // Fee: 1,000 (0.1%)
-        bancorConverter.addConnector(IERC20Token(ERC20tokenAddr), reserveRatio, true);
-        bancorConverter.setConversionFee(_conversionFee);
+        //uint index = 0;
+        //uint32 reserveRatio = 10; // The case of this, I specify 10% as percentage of ratio. (After I need to divide by 100)
+        //uint32 _conversionFee = 1000;  // Fee: 1,000 (0.1%)
+        //bancorConverter.addConnector(IERC20Token(ERC20tokenAddr), reserveRatio, true);
+        //bancorConverter.setConversionFee(_conversionFee);
 
         // Step #4: Funding & Initial Supply
-        uint256 fundedAmount = 100;
-        bancorConverter.fund(fundedAmount);
+        //uint256 fundedAmount = 100;
+        //bancorConverter.fund(fundedAmount);
 
         // Step #5: Activation
         // Step #6: Multisig Ownership
-        address _converterAddress;  // @notice - This variable is for receiving return value of createConverter() below
-        uint32 _maxConversionFee = 1;
-        _converterAddress = bancorConverterFactory.createConverter(smartToken, 
-                                                                   contractRegistry, 
-                                                                   _maxConversionFee, 
-                                                                   IERC20Token(ERC20tokenAddr), 
-                                                                   reserveRatio);
+        //address _converterAddress;  // @notice - This variable is for receiving return value of createConverter() below
+        //uint32 _maxConversionFee = 1;
+        //_converterAddress = bancorConverterFactory.createConverter(smartToken, 
+        //                                                           contractRegistry, 
+        //                                                           _maxConversionFee, 
+        //                                                           IERC20Token(ERC20tokenAddr), 
+        //                                                           reserveRatio);
 
         // Step #7: Converters Registry Listing
         bancorConverterRegistry.addConverter(IBancorConverter(_converterAddress));
