@@ -11,6 +11,7 @@ import "./bancor-protocol/converter/BancorConverterRegistry.sol"; // Step #7: Co
 import './bancor-protocol/token/interfaces/IERC20Token.sol';
 
 import './bancor-protocol/utility/Managed.sol';
+import './bancor-protocol/converter/BancorFormula.sol';
 
 
 // Storage
@@ -26,11 +27,15 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
     BancorConverterFactory public bancorConverterFactory;
     BancorConverterRegistry public bancorConverterRegistry;
 
-    IERC20Token public ierc20Token;
+    BancorFormula public bancorFormula;
+
+    IERC20Token public token;
 
     address BNTtokenAddr;
     address ERC20tokenAddr;
-    address cDAItokenAddr;  // cToken from compound pool
+    address cDAItokenAddr;   // cToken from compound pool
+
+    address BANCOR_FORMULA;  // ContractAddress of BancorFormula.sol
 
 
     constructor(
@@ -41,7 +46,8 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
         address _smartToken,
         //address _bancorConverter,
         address _bancorConverterFactory,
-        address _bancorConverterRegistry
+        address _bancorConverterRegistry,
+        address _bancorFormula
     ) 
         public
     {
@@ -50,6 +56,10 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
         BNTtokenAddr = _BNTtokenAddr;
         ERC20tokenAddr = _ERC20tokenAddr;
         cDAItokenAddr = _cDAItokenAddr;  // cToken from compound pool
+
+        BANCOR_FORMULA = BancorFormula(_bancorFormula);
+
+        token = IERC20Token(ERC20tokenAddr);
 
         // Step #2: Smart Relay Token Deployment
         smartToken = SmartToken(_smartToken);
@@ -96,11 +106,14 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
         //uint index = 0;
         uint32 reserveRatio = 10; // The case of this, I specify 10% as percentage of ratio. (After I need to divide by 100)
         //uint32 _conversionFee = 1000;  // Fee: 1,000 (0.1%)
+
+        addConnector(IERC20Token(ERC20tokenAddr), reserveRatio, true);
         //bancorConverter.addConnector(IERC20Token(ERC20tokenAddr), reserveRatio, true);
         //bancorConverter.setConversionFee(_conversionFee);
 
         // Step #4: Funding & Initial Supply
-        //uint256 fundedAmount = 100;
+        uint256 fundedAmount = 100;
+        fund(fundedAmount);
         //bancorConverter.fund(fundedAmount);
 
         // Step #5: Activation
@@ -110,7 +123,7 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
         _converterAddress = bancorConverterFactory.createConverter(smartToken, 
                                                                    contractRegistry, 
                                                                    _maxConversionFee, 
-                                                                   IERC20Token(ERC20tokenAddr), 
+                                                                   token, 
                                                                    reserveRatio);
 
         // Step #7: Converters Registry Listing
@@ -150,18 +163,32 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
     bool public conversionsEnabled = true;          // deprecated, backward compatibility
 
 
-    event Conversion(
-        address indexed _fromToken,
-        address indexed _toToken,
-        address indexed _trader,
-        uint256 _amount,
-        uint256 _return,
-        int256 _conversionFee
+    // event Conversion(
+    //     address indexed _fromToken,
+    //     address indexed _toToken,
+    //     address indexed _trader,
+    //     uint256 _amount,
+    //     uint256 _return,
+    //     int256 _conversionFee
+    // );
+
+    event PriceDataUpdate(
+        address indexed _connectorToken,
+        uint256 _tokenSupply,
+        uint256 _connectorBalance,
+        uint32 _connectorWeight
     );
+
 
     // validates reserve ratio
     modifier validReserveRatio(uint32 _ratio) {
         require(_ratio > 0 && _ratio <= RATIO_RESOLUTION);
+        _;
+    }
+
+    // allows execution only on a multiple-reserve converter
+    modifier multipleReservesOnly {
+        require(reserveTokens.length > 1);
         _;
     }
 
@@ -207,5 +234,58 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
     //     conversionFee = _conversionFee;
     // }
 
+
+    /**
+      * @dev buys the token with all reserve tokens using the same percentage
+      * for example, if the caller increases the supply by 10%,
+      * then it will cost an amount equal to 10% of each reserve token balance
+      * note that the function can be called only when conversions are enabled
+      * 
+      * @param _amount  amount to increase the supply by (in the smart token)
+    */
+    function fund(uint256 _amount)
+        public
+        multipleReservesOnly
+    {
+        uint256 supply = smartToken.totalSupply();
+        IBancorFormula formula = IBancorFormula(BANCOR_FORMULA);
+
+        // iterate through the reserve tokens and transfer a percentage equal to the ratio between _amount
+        // and the total supply in each reserve from the caller to the converter
+        IERC20Token reserveToken;
+        uint256 reserveBalance;
+        uint256 reserveAmount;
+        for (uint16 i = 0; i < reserveTokens.length; i++) {
+            reserveToken = reserveTokens[i];
+            reserveBalance = reserveToken.balanceOf(this);
+            reserveAmount = formula.calculateFundCost(supply, reserveBalance, totalReserveRatio, _amount);
+
+            Reserve storage reserve = reserves[reserveToken];
+
+            // transfer funds from the caller in the reserve token
+            ensureTransferFrom(reserveToken, msg.sender, this, reserveAmount);
+
+            // dispatch price data update for the smart token/reserve
+            emit PriceDataUpdate(reserveToken, supply + _amount, reserveBalance + reserveAmount, reserve.ratio);
+        }
+
+        // issue new funds to the caller in the smart token
+        smartToken.issue(msg.sender, _amount);
+    }
+
+
+    function ensureTransferFrom(IERC20Token _token, address _from, address _to, uint256 _amount) private {
+        // We must assume that functions `transfer` and `transferFrom` do not return anything,
+        // because not all tokens abide the requirement of the ERC20 standard to return success or failure.
+        // This is because in the current compiler version, the calling contract can handle more returned data than expected but not less.
+        // This may change in the future, so that the calling contract will revert if the size of the data is not exactly what it expects.
+        uint256 prevBalance = _token.balanceOf(_to);
+        if (_from == address(this))
+            INonStandardERC20(_token).transfer(_to, _amount);
+        else
+            INonStandardERC20(_token).transferFrom(_from, _to, _amount);
+        uint256 postBalance = _token.balanceOf(_to);
+        require(postBalance > prevBalance);
+    }
 
 }

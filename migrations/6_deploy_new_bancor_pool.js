@@ -18,6 +18,9 @@ const _smartToken = SmartToken.address
 const _bancorConverterFactory = BancorConverterFactory.address
 const _bancorConverterRegistry = '0x8bf88CFed154b0f6dbdC64cb35c829698b26c869'
 
+var BancorFormula = artifacts.require("BancorFormula");;
+const _bancorFormula = BancorFormula.address
+
 
 module.exports = function(deployer) {
   deployer.deploy(
@@ -29,6 +32,7 @@ module.exports = function(deployer) {
     _smartToken,
     //_bancorConverter,
     _bancorConverterFactory,
-    _bancorConverterRegistry    
+    _bancorConverterRegistry,
+    _bancorFormula    
   );
 };
