@@ -39,6 +39,21 @@ export default class NewBancorPool extends Component {
   }
 
 
+  testFuncCallBancorNetworkContractAddr = async () => {
+    const { accounts, new_bancor_pool, web3 } = this.state;
+
+    const response_1 = await new_bancor_pool.methods.testFuncCallBancorNetworkContractAddr().call()
+    console.log('=== response of testFuncCallBancorNetworkContractAddr() function ===', response_1); 
+  }
+
+  testFuncCallBancorConverterContractAddr = async () => {
+    const { accounts, new_bancor_pool, web3 } = this.state;
+
+    const response_1 = await new_bancor_pool.methods.testFuncCallBancorConverterContractAddr().call()
+    console.log('=== response of testFuncCallBancorConverterContractAddr() function ===', response_1); 
+  }
+
+
   //////////////////////////////////// 
   ///// Refresh Values
   ////////////////////////////////////
@@ -172,6 +187,10 @@ export default class NewBancorPool extends Component {
               />
 
               <Button size={'small'} mt={3} mb={2} onClick={this.getTestData}> Get TestData </Button> <br />
+
+              <Button size={'small'} mt={3} mb={2} onClick={this.testFuncCallBancorNetworkContractAddr}> testFuncCallBancorNetworkContractAddr </Button> <br />
+
+              <Button size={'small'} mt={3} mb={2} onClick={this.testFuncCallBancorConverterContractAddr}> testFuncCallBancorConverterContractAddr </Button> <br />
 
             </Card>
           </Grid>

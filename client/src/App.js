@@ -5,8 +5,8 @@ import Footer from "./components/Footer/index.js";
 import Hero from "./components/Hero/index.js";
 import Web3Info from "./components/Web3Info/index.js";
 
-// SwapFactory
-import SwapFactory from "./components/NewBancorPool/index.js";
+// NewBancorPool
+import NewBancorPool from "./components/NewBancorPool/index.js";
 
 import { Typography, Grid, TextField } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
@@ -192,7 +192,7 @@ class App extends Component {
       <div className={styles.App}>
         <Header />
           {this.state.route === '' && this.renderInstructions()}
-          {this.state.route === 'swap_factory' && this.renderNewBancorPool()} 
+          {this.state.route === 'new_bancor_pool' && this.renderNewBancorPool()} 
         <Footer />
       </div>
     );
