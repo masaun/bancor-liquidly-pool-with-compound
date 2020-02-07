@@ -8,6 +8,8 @@ import "./bancor-protocol/token/SmartTokenController.sol";                   // 
 import "./bancor-protocol/token/interfaces/ISmartToken.sol";                  // Step #7: Converters Registry Listing
 //import "./bancor-protocol/converter/BancorConverter.sol";         // Step #3: Converter Deployment
 //import "./bancor-protocol/converter/BancorConverterFactory.sol";  // Step #5: Activation and Step #6: Multisig Ownership
+import "./bancor-protocol/converter/interfaces/IBancorConverterFactory.sol";
+
 import "./bancor-protocol/converter/BancorConverterRegistry.sol"; // Step #7: Converters Registry Listing
 import "./bancor-protocol/converter/BancorConverterRegistryData.sol";
 
@@ -23,7 +25,7 @@ import "./storage/BnStorage.sol";
 import "./storage/BnConstants.sol";
 
 
-contract NewBancorPool is BnStorage, BnConstants, Managed {
+contract NewBancorPool is BnStorage, BnConstants, Managed, ContractRegistryClient {
 
     ContractRegistry public contractRegistry;
     ContractRegistryClient public contractRegistryClient;
@@ -50,7 +52,7 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
 
     constructor(
         address _contractRegistry,
-        address _contractRegistryClient,
+        //address _contractRegistryClient,
         address _BNTtokenAddr,
         address _ERC20tokenAddr,
         address _cDAItokenAddr,
@@ -102,13 +104,18 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
         return bancorNetwork;
     }
 
-    function testFuncCallBancorConverterFactoryContractAddr() public view returns (address _bancorConverterFactory) {
-        address bancorConverterFactory;
-        //bancorConverterFactory = contractRegistryClient.addressOf(BANCOR_CONVERTER_FACTORY);
-        bancorConverterFactory = contractRegistry.addressOf('BancorConverterFactory');
+    function testFuncCallBancorConverterFactoryContractAddr() public view returns (IBancorConverterFactory) {
+        //address bancorConverterFactory;
+        IBancorConverterFactory bancorConverterFactory = IBancorConverterFactory(addressOf(BANCOR_CONVERTER_FACTORY));
+        //bancorConverterFactory = contractRegistry.addressOf('BancorConverterFactory');
         return bancorConverterFactory;
     }
     
+    function testFuncCallBancorConverterUpgraderContractAddr() public view returns (address _bancorConverterUpgrader) {
+        address bancorConverterUpgrader;
+        bancorConverterUpgrader = contractRegistry.addressOf('BancorConverterUpgrader');
+        return bancorConverterUpgrader;
+    }
 
 
     /***
