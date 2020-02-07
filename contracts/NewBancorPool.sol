@@ -96,10 +96,10 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
         return bancorNetwork;
     }
 
-    function testFuncCallBancorConverterContractAddr() public view returns (address _bancorConverter) {
-        address bancorConverter;
-        bancorConverter = contractRegistry.addressOf('BancorConverter');
-        return bancorConverter;
+    function testFuncCallBancorConverterFactoryContractAddr() public view returns (address _bancorConverterFactory) {
+        address bancorConverterFactory;
+        bancorConverterFactory = contractRegistry.addressOf('BancorConverterFactory');
+        return bancorConverterFactory;
     }
     
 
