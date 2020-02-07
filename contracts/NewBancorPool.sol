@@ -3,6 +3,8 @@ pragma solidity 0.4.26;
 // Bancor-Protocol
 import "./bancor-protocol/utility/ContractRegistry.sol";          // Step #1: Initial Setup
 import "./bancor-protocol/token/SmartToken.sol";                  // Step #2: Smart Relay Token Deployment
+import "./bancor-protocol/token/SmartTokenController.sol";                   // Step #7: Converters Registry Listing
+import "./bancor-protocol/token/interfaces/ISmartToken.sol";                  // Step #7: Converters Registry Listing
 //import "./bancor-protocol/converter/BancorConverter.sol";         // Step #3: Converter Deployment
 //import "./bancor-protocol/converter/BancorConverterFactory.sol";  // Step #5: Activation and Step #6: Multisig Ownership
 import "./bancor-protocol/converter/BancorConverterRegistry.sol"; // Step #7: Converters Registry Listing
@@ -37,6 +39,8 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
     address ERC20tokenAddr;
     address cDAItokenAddr;   // cToken from compound pool
 
+    address smartTokenAddr;
+
     address BANCOR_CONVERTER_REGISTRY_DATA;
     address BANCOR_FORMULA;  // ContractAddress of BancorFormula.sol
 
@@ -60,6 +64,8 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
         BNTtokenAddr = _BNTtokenAddr;
         ERC20tokenAddr = _ERC20tokenAddr;
         cDAItokenAddr = _cDAItokenAddr;  // cToken from compound pool
+
+        smartTokenAddr = _smartToken;
 
         BANCOR_CONVERTER_REGISTRY_DATA = _bancorConverterRegistryData;
         BANCOR_FORMULA = _bancorFormula;
@@ -184,6 +190,10 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
         uint32 _connectorWeight
     );
 
+    event SmartTokenAdded(address indexed _smartToken);
+    event LiquidityPoolAdded(address indexed _liquidityPool);
+    event ConvertibleTokenAdded(address indexed _convertibleToken, address indexed _smartToken);
+
 
     // validates reserve ratio
     modifier validReserveRatio(uint32 _ratio) {
@@ -278,7 +288,6 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
         smartToken.issue(msg.sender, _amount);
     }
 
-
     function ensureTransferFrom(IERC20Token _token, address _from, address _to, uint256 _amount) private {
         // We must assume that functions `transfer` and `transferFrom` do not return anything,
         // because not all tokens abide the requirement of the ERC20 standard to return success or failure.
@@ -294,24 +303,46 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
     }
 
 
+
     function addConverter() external {
         // validate input
         //require(isConverterValid(_converter));
 
-        IBancorConverterRegistryData converterRegistryData = IBancorConverterRegistryData(BANCOR_CONVERTER_REGISTRY_DATA);
-        ISmartToken token = ISmartTokenController(_converter).token();
-        uint reserveTokenCount = _converter.connectorTokenCount();
+        BancorConverterRegistryData converterRegistryData = BancorConverterRegistryData(BANCOR_CONVERTER_REGISTRY_DATA);
+        uint reserveTokenCount = connectorTokenCount();
 
         // add the smart token
-        addSmartToken(converterRegistryData, token);
+        addSmartToken(converterRegistryData, smartTokenAddr);
         if (reserveTokenCount > 1)
-            addLiquidityPool(converterRegistryData, token);
+            addLiquidityPool(converterRegistryData, smartTokenAddr);
         else
-            addConvertibleToken(converterRegistryData, token, token);
+            addConvertibleToken(converterRegistryData, smartTokenAddr, smartTokenAddr);
 
         // add all reserve tokens
         for (uint i = 0; i < reserveTokenCount; i++)
-            addConvertibleToken(converterRegistryData, _converter.connectorTokens(i), token);
+            addConvertibleToken(converterRegistryData, reserveTokens[i], token);
     }
 
+    function connectorTokenCount() public view returns (uint16) {
+        return reserveTokenCount();
+    }
+
+    function reserveTokenCount() public view returns (uint16) {
+        return uint16(reserveTokens.length);
+    }
+
+    function addSmartToken(IBancorConverterRegistryData _converterRegistryData, address _smartToken) internal {
+        _converterRegistryData.addSmartToken(_smartToken);
+        emit SmartTokenAdded(_smartToken);
+    }
+
+    function addLiquidityPool(IBancorConverterRegistryData _converterRegistryData, address _liquidityPool) internal {
+        _converterRegistryData.addLiquidityPool(_liquidityPool);
+        emit LiquidityPoolAdded(_liquidityPool);
+    }
+
+    function addConvertibleToken(IBancorConverterRegistryData _converterRegistryData, address _convertibleToken, address _smartToken) internal {
+        _converterRegistryData.addConvertibleToken(_convertibleToken, _smartToken);
+        emit ConvertibleTokenAdded(_convertibleToken, _smartToken);
+    }
 }
