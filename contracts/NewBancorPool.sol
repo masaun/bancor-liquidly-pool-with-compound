@@ -1,16 +1,17 @@
 pragma solidity 0.4.26;
 
 // Bancor-Protocol
-import "./bancor-protocol/utility/ContractRegistry.sol";          // Step #1: Initial Setup
-import "./bancor-protocol/utility/ContractRegistryClient.sol";
-import "./bancor-protocol/token/SmartToken.sol";                  // Step #2: Smart Relay Token Deployment
-import "./bancor-protocol/token/SmartTokenController.sol";                   // Step #7: Converters Registry Listing
-import "./bancor-protocol/token/interfaces/ISmartToken.sol";                  // Step #7: Converters Registry Listing
-//import "./bancor-protocol/converter/BancorConverter.sol";         // Step #3: Converter Deployment
-//import "./bancor-protocol/converter/BancorConverterFactory.sol";  // Step #5: Activation and Step #6: Multisig Ownership
+import "./bancor-protocol/utility/ContractRegistry.sol";            // Step #1: Initial Setup
+//import "./bancor-protocol/utility/ContractRegistryClient.sol";
+import "./bancor-protocol/token/SmartToken.sol";                    // Step #2: Smart Relay Token Deployment
+import "./bancor-protocol/token/SmartTokenController.sol";          // Step #7: Converters Registry Listing
+import "./bancor-protocol/token/interfaces/ISmartToken.sol";        // Step #7: Converters Registry Listing
+import "./bancor-protocol/converter/BancorConverter.sol";         // Step #3: Converter Deployment
+import "./bancor-protocol/converter/BancorConverterFactory.sol";  // Step #5: Activation and Step #6: Multisig Ownership
+import "./bancor-protocol/converter/interfaces/IBancorConverter.sol";
 import "./bancor-protocol/converter/interfaces/IBancorConverterFactory.sol";
 
-import "./bancor-protocol/converter/BancorConverterRegistry.sol"; // Step #7: Converters Registry Listing
+import "./bancor-protocol/converter/BancorConverterRegistry.sol";   // Step #7: Converters Registry Listing
 import "./bancor-protocol/converter/BancorConverterRegistryData.sol";
 
 //import "./bancor-protocol/token/ERC20Token.sol";
@@ -25,14 +26,14 @@ import "./storage/BnStorage.sol";
 import "./storage/BnConstants.sol";
 
 
-contract NewBancorPool is BnStorage, BnConstants, Managed, ContractRegistryClient {
+contract NewBancorPool is BnStorage, BnConstants, Managed {
 
     ContractRegistry public contractRegistry;
-    ContractRegistryClient public contractRegistryClient;
+    //ContractRegistryClient public contractRegistryClient;
 
     SmartToken public smartToken;
-    //BancorConverter public bancorConverter;
-    //BancorConverterFactory public bancorConverterFactory;
+    BancorConverter public bancorConverter;
+    BancorConverterFactory public bancorConverterFactory;
     BancorConverterRegistry public bancorConverterRegistry;
     BancorConverterRegistryData public bancorConverterRegistryData;
 
@@ -48,6 +49,8 @@ contract NewBancorPool is BnStorage, BnConstants, Managed, ContractRegistryClien
 
     address smartTokenAddr;
 
+    address bancorConverterAddr;
+
     address BANCOR_CONVERTER_REGISTRY_DATA;
     address BANCOR_FORMULA;  // ContractAddress of BancorFormula.sol
 
@@ -59,7 +62,7 @@ contract NewBancorPool is BnStorage, BnConstants, Managed, ContractRegistryClien
         address _ERC20tokenAddr,
         address _cDAItokenAddr,
         address _smartToken,
-        //address _bancorConverter,
+        address _bancorConverter,
         //address _bancorConverterFactory,
         address _bancorConverterRegistry,
         address _bancorConverterRegistryData,
@@ -79,6 +82,8 @@ contract NewBancorPool is BnStorage, BnConstants, Managed, ContractRegistryClien
 
         smartTokenAddr = _smartToken;
 
+        bancorConverterAddr = _bancorConverter;
+
         BANCOR_CONVERTER_REGISTRY_DATA = _bancorConverterRegistryData;
         BANCOR_FORMULA = _bancorFormula;
 
@@ -88,7 +93,7 @@ contract NewBancorPool is BnStorage, BnConstants, Managed, ContractRegistryClien
         smartToken = SmartToken(_smartToken);
 
         // Step #3: Converter Deployment
-        //bancorConverter = BancorConverter(_bancorConverter);
+        bancorConverter = BancorConverter(_bancorConverter);
 
         // Step #5: Activation and Step #6: Multisig Ownership
         //bancorConverterFactory = BancorConverterFactory(_bancorConverterFactory);
@@ -108,18 +113,24 @@ contract NewBancorPool is BnStorage, BnConstants, Managed, ContractRegistryClien
         return bancorNetwork;
     }
 
-    function testFuncCallBancorConverterFactoryContractAddr() public view returns (IBancorConverterFactory) {
-        //address bancorConverterFactory;
-        IBancorConverterFactory bancorConverterFactory = IBancorConverterFactory(addressOf(BANCOR_CONVERTER_FACTORY));
-        //bancorConverterFactory = contractRegistry.addressOf('BancorConverterFactory');
-        return bancorConverterFactory;
-    }
+    // function testFuncCallBancorConverterFactoryContractAddr() public view returns (IBancorConverterFactory) {
+    //     address bancorConverterFactory;
+    //     //IBancorConverterFactory bancorConverterFactory = IBancorConverterFactory(addressOf(BANCOR_CONVERTER_FACTORY));
+    //     bancorConverterFactory = contractRegistry.addressOf('BancorConverterFactory');
+    //     return bancorConverterFactory;
+    // }
     
     function testFuncCallBancorConverterUpgraderContractAddr() public view returns (address _bancorConverterUpgrader) {
         address bancorConverterUpgrader;
         bancorConverterUpgrader = contractRegistry.addressOf('BancorConverterUpgrader');
         return bancorConverterUpgrader;
     }
+
+    function _addConverter() public {
+        bancorConverterRegistry.addConverter(IBancorConverter(bancorConverterAddr));
+    }
+    
+
 
 
     /***

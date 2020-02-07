@@ -53,6 +53,12 @@ export default class NewBancorPool extends Component {
     console.log('=== response of testFuncCallBancorConverterFactoryContractAddr() function ===', response_1); 
   }
 
+  testFuncCallBancorConverterUpgraderContractAddr = async () => {
+    const { accounts, new_bancor_pool, web3 } = this.state;
+
+    const response_1 = await new_bancor_pool.methods.testFuncCallBancorConverterUpgraderContractAddr().call()
+    console.log('=== response of testFuncCallBancorConverterUpgraderContractAddr() function ===', response_1); 
+  }
 
   //////////////////////////////////// 
   ///// Refresh Values
@@ -192,6 +198,7 @@ export default class NewBancorPool extends Component {
 
               <Button size={'small'} mt={3} mb={2} onClick={this.testFuncCallBancorConverterFactoryContractAddr}> testFuncCallBancorConverterFactoryContractAddr </Button> <br />
 
+              <Button size={'small'} mt={3} mb={2} onClick={this.testFuncCallBancorConverterUpgraderContractAddr}> testFuncCallBancorConverterUpgraderContractAddr </Button> <br />
             </Card>
           </Grid>
 
