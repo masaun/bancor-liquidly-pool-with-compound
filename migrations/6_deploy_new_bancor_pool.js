@@ -30,7 +30,7 @@ module.exports = function(deployer) {
     _ERC20token,
     _cDAI,
     _smartToken,
-    //_bancorConverter,
+    _bancorConverter,
     //_bancorConverterFactory,
     _bancorConverterRegistry,
     _bancorConverterRegistryData,
