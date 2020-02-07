@@ -40,6 +40,8 @@ contract NewBancorPool is BnStorage, BnConstants, Managed, ContractRegistryClien
 
     IERC20Token public token;
 
+    address contractRegistryAddr;
+
     address BNTtokenAddr;
     address ERC20tokenAddr;
     address cDAItokenAddr;   // cToken from compound pool
@@ -68,6 +70,8 @@ contract NewBancorPool is BnStorage, BnConstants, Managed, ContractRegistryClien
         // Step #1: Initial Setup
         contractRegistry = ContractRegistry(_contractRegistry);
         //contractRegistryClient = ContractRegistryClient(_contractRegistryClient);
+
+        contractRegistryAddr = _contractRegistry;
 
         BNTtokenAddr = _BNTtokenAddr;
         ERC20tokenAddr = _ERC20tokenAddr;
