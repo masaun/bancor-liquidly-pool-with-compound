@@ -2,6 +2,7 @@ pragma solidity 0.4.26;
 
 // Bancor-Protocol
 import "./bancor-protocol/utility/ContractRegistry.sol";          // Step #1: Initial Setup
+import "./bancor-protocol/utility/ContractRegistryClient.sol";
 import "./bancor-protocol/token/SmartToken.sol";                  // Step #2: Smart Relay Token Deployment
 import "./bancor-protocol/token/SmartTokenController.sol";                   // Step #7: Converters Registry Listing
 import "./bancor-protocol/token/interfaces/ISmartToken.sol";                  // Step #7: Converters Registry Listing
@@ -25,6 +26,8 @@ import "./storage/BnConstants.sol";
 contract NewBancorPool is BnStorage, BnConstants, Managed {
 
     ContractRegistry public contractRegistry;
+    ContractRegistryClient public contractRegistryClient;
+
     SmartToken public smartToken;
     //BancorConverter public bancorConverter;
     //BancorConverterFactory public bancorConverterFactory;
@@ -47,6 +50,7 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
 
     constructor(
         address _contractRegistry,
+        address _contractRegistryClient,
         address _BNTtokenAddr,
         address _ERC20tokenAddr,
         address _cDAItokenAddr,
@@ -61,6 +65,8 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
     {
         // Step #1: Initial Setup
         contractRegistry = ContractRegistry(_contractRegistry);
+        //contractRegistryClient = ContractRegistryClient(_contractRegistryClient);
+
         BNTtokenAddr = _BNTtokenAddr;
         ERC20tokenAddr = _ERC20tokenAddr;
         cDAItokenAddr = _cDAItokenAddr;  // cToken from compound pool
@@ -98,6 +104,7 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
 
     function testFuncCallBancorConverterFactoryContractAddr() public view returns (address _bancorConverterFactory) {
         address bancorConverterFactory;
+        //bancorConverterFactory = contractRegistryClient.addressOf(BANCOR_CONVERTER_FACTORY);
         bancorConverterFactory = contractRegistry.addressOf('BancorConverterFactory');
         return bancorConverterFactory;
     }
