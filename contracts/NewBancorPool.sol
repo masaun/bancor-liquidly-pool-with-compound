@@ -6,6 +6,7 @@ import "./bancor-protocol/token/SmartToken.sol";                  // Step #2: Sm
 //import "./bancor-protocol/converter/BancorConverter.sol";         // Step #3: Converter Deployment
 //import "./bancor-protocol/converter/BancorConverterFactory.sol";  // Step #5: Activation and Step #6: Multisig Ownership
 import "./bancor-protocol/converter/BancorConverterRegistry.sol"; // Step #7: Converters Registry Listing
+import "./bancor-protocol/converter/BancorConverterRegistryData.sol";
 
 //import "./bancor-protocol/token/ERC20Token.sol";
 import './bancor-protocol/token/interfaces/IERC20Token.sol';
@@ -26,6 +27,7 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
     //BancorConverter public bancorConverter;
     //BancorConverterFactory public bancorConverterFactory;
     BancorConverterRegistry public bancorConverterRegistry;
+    BancorConverterRegistryData public bancorConverterRegistryData;
 
     BancorFormula public bancorFormula;
 
@@ -35,6 +37,7 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
     address ERC20tokenAddr;
     address cDAItokenAddr;   // cToken from compound pool
 
+    address BANCOR_CONVERTER_REGISTRY_DATA;
     address BANCOR_FORMULA;  // ContractAddress of BancorFormula.sol
 
 
@@ -47,6 +50,7 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
         //address _bancorConverter,
         //address _bancorConverterFactory,
         address _bancorConverterRegistry,
+        address _bancorConverterRegistryData,
         address _bancorFormula
     ) 
         public
@@ -57,7 +61,8 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
         ERC20tokenAddr = _ERC20tokenAddr;
         cDAItokenAddr = _cDAItokenAddr;  // cToken from compound pool
 
-        BANCOR_FORMULA = BancorFormula(_bancorFormula);
+        BANCOR_CONVERTER_REGISTRY_DATA = _bancorConverterRegistryData;
+        BANCOR_FORMULA = _bancorFormula;
 
         token = IERC20Token(ERC20tokenAddr);
 
@@ -286,6 +291,27 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
             INonStandardERC20(_token).transferFrom(_from, _to, _amount);
         uint256 postBalance = _token.balanceOf(_to);
         require(postBalance > prevBalance);
+    }
+
+
+    function addConverter() external {
+        // validate input
+        //require(isConverterValid(_converter));
+
+        IBancorConverterRegistryData converterRegistryData = IBancorConverterRegistryData(BANCOR_CONVERTER_REGISTRY_DATA);
+        ISmartToken token = ISmartTokenController(_converter).token();
+        uint reserveTokenCount = _converter.connectorTokenCount();
+
+        // add the smart token
+        addSmartToken(converterRegistryData, token);
+        if (reserveTokenCount > 1)
+            addLiquidityPool(converterRegistryData, token);
+        else
+            addConvertibleToken(converterRegistryData, token, token);
+
+        // add all reserve tokens
+        for (uint i = 0; i < reserveTokenCount; i++)
+            addConvertibleToken(converterRegistryData, _converter.connectorTokens(i), token);
     }
 
 }
