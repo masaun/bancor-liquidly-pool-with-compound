@@ -90,6 +90,20 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
         return BnConstants.hundredPercent;
     }
 
+    function testFuncCallBancorNetworkContractAddr() public returns (address _bancorNetwork) {
+        address bancorNetwork;
+        bancorNetwork = contractRegistry.addressOf('BancorNetwork');
+        return bancorNetwork;
+    }
+
+    function testFuncCallBancorConverterContractAddr() public returns (address _bancorConverter) {
+        address bancorConverter;
+        bancorConverter = contractRegistry.addressOf('BancorConverter');
+        return bancorConverter;
+    }
+    
+
+
     /***
      * @notice - Integrate pools with lending protocols (e.g., lend pool tokens to Compound) to hedge risk for stakers 
      * https://docs.bancor.network/user-guides/token-integration/how-to-create-a-bancor-liquidity-pool
