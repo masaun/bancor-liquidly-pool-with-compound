@@ -90,13 +90,13 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
         return BnConstants.hundredPercent;
     }
 
-    function testFuncCallBancorNetworkContractAddr() public returns (address _bancorNetwork) {
+    function testFuncCallBancorNetworkContractAddr() public view returns (address _bancorNetwork) {
         address bancorNetwork;
         bancorNetwork = contractRegistry.addressOf('BancorNetwork');
         return bancorNetwork;
     }
 
-    function testFuncCallBancorConverterContractAddr() public returns (address _bancorConverter) {
+    function testFuncCallBancorConverterContractAddr() public view returns (address _bancorConverter) {
         address bancorConverter;
         bancorConverter = contractRegistry.addressOf('BancorConverter');
         return bancorConverter;
