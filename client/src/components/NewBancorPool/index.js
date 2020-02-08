@@ -49,12 +49,10 @@ export default class NewBancorPool extends Component {
   integratePoolWithLendingProtocol = async () => {
     const { accounts, new_bancor_pool, web3 } = this.state;
 
-    const _contractName1 = '0x62bd9D98d4E188e281D7B78e29334969bbE1053c'
-    //string _contractName2,
     const receiverAddr = '0x718E3ea0B8C2911C5e54Cb4b9B2075fdd87B55a7'
     const amountOfSmartToken = 100
 
-    const response_1 = await new_bancor_pool.methods.integratePoolWithLendingProtocol(_contractName1, receiverAddr, amountOfSmartToken).send({ from: accounts[0] })
+    const response_1 = await new_bancor_pool.methods.integratePoolWithLendingProtocol(receiverAddr, amountOfSmartToken).send({ from: accounts[0] })
     console.log('=== response of integratePoolWithLendingProtocol() function ===', response_1);  
   }
 
