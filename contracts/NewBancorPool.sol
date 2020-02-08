@@ -109,10 +109,10 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
      ***/
     function mintCToken() public returns (bool) {
         // [In progress]: 
-        Erc20 underlying = Erc20(0xToken...);     // get a handle for the underlying asset contract
-        CErc20 cToken = CErc20(0x3FDA...);        // get a handle for the corresponding cToken contract
-        underlying.approve(address(cToken), 100); // approve the transfer
-        assert(cToken.mint(100) == 0);            // mint the cTokens and assert there is no error
+        Erc20 underlying = Erc20(_ERC20tokenAddr);  // get a handle for the underlying asset contract
+        CErc20 cToken = CErc20(cDAItokenAddr);      // get a handle for the corresponding cToken contract
+        underlying.approve(address(cToken), 100);   // approve the transfer
+        assert(cToken.mint(100) == 0);              // mint the cTokens and assert there is no error
     }
     
 
