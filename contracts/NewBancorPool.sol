@@ -21,6 +21,11 @@ import './bancor-protocol/utility/Managed.sol';
 import './bancor-protocol/converter/BancorFormula.sol';
 
 
+// Compound and CToken
+import "./compound-protocol/CErc20.sol";
+
+
+
 // Storage
 import "./storage/BnStorage.sol";
 import "./storage/BnConstants.sol";
