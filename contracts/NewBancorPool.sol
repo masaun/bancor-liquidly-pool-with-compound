@@ -76,6 +76,7 @@ contract NewBancorPool2 is BnStorage, BnConstants, Managed {
         bancorConverterAddr = _bancorConverter;
 
         token = IERC20Token(ERC20tokenAddr);
+        //token = IERC20Token(cDAItokenAddr);   // cDAI on Ropsten
 
         // Step #2: Smart Relay Token Deployment
         smartToken = SmartToken(_smartToken);
@@ -108,7 +109,7 @@ contract NewBancorPool2 is BnStorage, BnConstants, Managed {
      * https://docs.bancor.network/user-guides/token-integration/how-to-create-a-bancor-liquidity-pool
      **/
     function integratePoolWithLendingProtocol(
-        bytes32 _contractName1, 
+        //bytes32 _contractName1, 
         //string _contractName2,
         address receiverAddr,
         uint256 amountOfSmartToken
@@ -116,10 +117,10 @@ contract NewBancorPool2 is BnStorage, BnConstants, Managed {
         // [In progress]: Integrate with lending pool of compound (cToken)
 
         // Step #1: Initial Setup
-        address token1;
+        //address token1;
         //address token2;
 
-        token1 = contractRegistry.addressOf(_contractName1);
+        //token1 = contractRegistry.addressOf(_contractName1);
         //token2 = contractRegistry.addressOf(_contractName2);
 
         // Step #2: Smart Relay Token Deployment
@@ -130,7 +131,8 @@ contract NewBancorPool2 is BnStorage, BnConstants, Managed {
         uint index = 0;
         uint32 reserveRatio = 10; // The case of this, I specify 10% as percentage of ratio. (After I need to divide by 100)
         uint32 _conversionFee = 1000;  // Fee: 1,000 (0.1%)
-        bancorConverter.addConnector(IERC20Token(ERC20tokenAddr), reserveRatio, true);
+        bancorConverter.addConnector(token, reserveRatio, true);
+        //bancorConverter.addConnector(IERC20Token(ERC20tokenAddr), reserveRatio, true);
         bancorConverter.setConversionFee(_conversionFee);
 
         // Step #4: Funding & Initial Supply
