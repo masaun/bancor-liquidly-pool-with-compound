@@ -26,7 +26,7 @@ import "./storage/BnStorage.sol";
 import "./storage/BnConstants.sol";
 
 
-contract NewBancorPool2 is BnStorage, BnConstants, Managed {
+contract NewBancorPool is BnStorage, BnConstants, Managed {
 
     ContractRegistry public contractRegistry;
 
