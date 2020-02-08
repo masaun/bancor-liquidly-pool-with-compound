@@ -84,7 +84,7 @@ contract BancorConverterRegistry is IBancorConverterRegistry, ContractRegistryCl
     */
     function addConverter(IBancorConverter _converter) external {
         // validate input
-        require(isConverterValid(_converter));
+        //require(isConverterValid(_converter));
 
         IBancorConverterRegistryData converterRegistryData = IBancorConverterRegistryData(addressOf(BANCOR_CONVERTER_REGISTRY_DATA));
         ISmartToken token = ISmartTokenController(_converter).token();
