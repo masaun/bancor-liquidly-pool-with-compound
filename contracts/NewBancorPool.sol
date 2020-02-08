@@ -140,12 +140,15 @@ contract NewBancorPool2 is BnStorage, BnConstants, Managed {
         // Step #5: Activation
         // Step #6: Multisig Ownership
         address _converterAddress;  // @notice - This variable is for receiving return value of createConverter() below
-        uint32 _maxConversionFee = 1;
-        _converterAddress = bancorConverterFactory.createConverter(smartToken, 
-                                                                   contractRegistry, 
-                                                                   _maxConversionFee, 
-                                                                   token, 
-                                                                   reserveRatio);
+        // uint32 _maxConversionFee = 1;
+        // _converterAddress = bancorConverterFactory.createConverter(smartToken, 
+        //                                                            contractRegistry, 
+        //                                                            _maxConversionFee, 
+        //                                                            token, 
+        //                                                            reserveRatio);
+        bancorConverter.transferOwnership(msg.sender);   // @dev - Reference from Managed.sol 
+        bancorConverter.transferManagement(msg.sender);  // @dev - Reference from Managed.sol 
+        _converterAddress = address(bancorConverter);
 
         // Step #7: Converters Registry Listing
         bancorConverterRegistry.addConverter(IBancorConverter(_converterAddress));
