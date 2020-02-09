@@ -22,7 +22,7 @@ import './bancor-protocol/converter/BancorFormula.sol';
 
 
 // Compound and CToken
-import "./compound-protocol/CErc20.sol";
+//import "./compound-protocol/CErc20.sol";
 
 
 
@@ -112,13 +112,13 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
      * @notice - Mint cToken (Compound Token)
      * @dev - Reference from this link => https://compound.finance/developers/ctokens
      ***/
-    function mintCToken() public returns (bool) {
-        // [In progress]: 
-        Erc20 underlying = Erc20(_ERC20tokenAddr);  // get a handle for the underlying asset contract
-        CErc20 cToken = CErc20(cDAItokenAddr);      // get a handle for the corresponding cToken contract
-        underlying.approve(address(cToken), 100);   // approve the transfer
-        assert(cToken.mint(100) == 0);              // mint the cTokens and assert there is no error
-    }
+    // function mintCToken() public returns (bool) {
+    //     // [In progress]: 
+    //     Erc20 underlying = Erc20(_ERC20tokenAddr);  // get a handle for the underlying asset contract
+    //     CErc20 cToken = CErc20(cDAItokenAddr);      // get a handle for the corresponding cToken contract
+    //     underlying.approve(address(cToken), 100);   // approve the transfer
+    //     assert(cToken.mint(100) == 0);              // mint the cTokens and assert there is no error
+    // }
     
 
 
