@@ -12,9 +12,9 @@ module.exports = {
         //return new HDWalletProvider("Replace here with your mnemonic word", process.env.RPC_URL_ROPSTEN)
       },
       network_id: '3',
-      //gas: 4465030,
-      //gasPrice: 10000000000,
-      skipDryRun: true
+      //gas:         4600000,      // Gas limit used for deploys
+      //gasPrice:    20000000000,
+      skipDryRun:  true
     },
     development: {
         host:       "localhost",
