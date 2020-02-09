@@ -142,7 +142,7 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
         //token1 = contractRegistry.addressOf(_contractName1);
         //token2 = contractRegistry.addressOf(_contractName2);
 
-        // Step #2: Smart Relay Token Deployment
+        // Step #2: Smart Relay Token Deployment（Using smartToken of "cDAIBNT"）
         smartToken.issue(msg.sender, amountOfSmartToken);
         smartToken.transfer(receiverAddr, amountOfSmartToken);
 
