@@ -47,8 +47,8 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
     address contractRegistryAddr;
 
     address BNTtokenAddr;
-    address ERC20tokenAddr;
-    address cDAItokenAddr;   // cToken from compound pool
+    address ERC20tokenAddr;  // DAI
+    address cDAItokenAddr;   // cDAI（cToken）from compound pool
 
     address smartTokenAddr;
 

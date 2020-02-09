@@ -1,6 +1,6 @@
 var SmartToken = artifacts.require("SmartToken");
-const _name = 'Test SmartToken'
-const _symbol = 'TST'
+const _name = 'cDAIBNT Token'
+const _symbol = 'cDAIBNT'
 const _decimals = 18
 
 
