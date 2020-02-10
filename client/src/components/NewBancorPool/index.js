@@ -47,6 +47,15 @@ export default class NewBancorPool extends Component {
   }
 
 
+  _mintCToken = async () => {
+    const { accounts, new_bancor_pool, web3 } = this.state;
+
+    const mintAmount = 100;
+    let response_1 = await new_bancor_pool.methods.mintCToken().send({ from: accounts[0] })
+    console.log('=== response of mintCToken() function ===', response_1); 
+  }
+
+
   testMintCompoundDAI = async () => {
     const { accounts, new_bancor_pool, web3, CompoundRopsten } = this.state;
 
@@ -213,6 +222,8 @@ export default class NewBancorPool extends Component {
               <Button size={'small'} mt={3} mb={2} onClick={this.getTestData}> Get TestData </Button> <br />
 
               <Button size={'small'} mt={3} mb={2} onClick={this.testFuncCallBancorNetworkContractAddr}> testFuncCallBancorNetworkContractAddr </Button> <br />
+
+              <Button size={'small'} mt={3} mb={2} onClick={this._mintCToken}> Mint CToken </Button> <br />
 
               <Button size={'small'} mt={3} mb={2} onClick={this.testMintCompoundDAI}> testMintCompoundDAI</Button> <br />
 
