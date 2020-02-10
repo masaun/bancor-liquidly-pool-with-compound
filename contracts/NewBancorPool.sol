@@ -45,6 +45,8 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
 
     IERC20Token public token;
 
+    ICErc20 public iCErc20;
+
     address contractRegistryAddr;
 
     address BNTtokenAddr;
@@ -84,6 +86,8 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
         token = IERC20Token(ERC20tokenAddr);
         //token = IERC20Token(cDAItokenAddr);   // cDAI on Ropsten
 
+        iCErc20 = ICErc20(0x2B536482a01E620eE111747F8334B395a42A555E);  // cDAI on Ropsten
+
         // Step #2: Smart Relay Token Deployment
         smartToken = SmartToken(_smartToken);
 
@@ -113,13 +117,16 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
      * @notice - Mint cToken (Compound Token)
      * @dev - Reference from this link => https://compound.finance/developers/ctokens
      ***/
-    // function mintCToken() public returns (bool) {
-    //     // [In progress]: 
-    //     Erc20 underlying = Erc20(_ERC20tokenAddr);  // get a handle for the underlying asset contract
-    //     CErc20 cToken = CErc20(cDAItokenAddr);      // get a handle for the corresponding cToken contract
-    //     underlying.approve(address(cToken), 100);   // approve the transfer
-    //     assert(cToken.mint(100) == 0);              // mint the cTokens and assert there is no error
-    // }
+    function mintCToken(uint256 mintAmount) public returns (bool) {
+        iCErc20.mint(mintAmount);
+
+        // [In progress]: 
+        // Erc20 underlying = Erc20(_ERC20tokenAddr);  // get a handle for the underlying asset contract
+        // CErc20 cToken = CErc20(cDAItokenAddr);      // get a handle for the corresponding cToken contract
+        // underlying.approve(address(cToken), 100);   // approve the transfer
+        // assert(cToken.mint(100) == 0);              // mint the cTokens and assert there is no error
+        return BnConstants.CONFIRMED;
+    }
     
 
 
