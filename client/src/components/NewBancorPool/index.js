@@ -46,6 +46,18 @@ export default class NewBancorPool extends Component {
     console.log('=== response of testFuncCallBancorNetworkContractAddr() function ===', response_1); 
   }
 
+
+  testMintCompoundDAI = async () => {
+    const { accounts, new_bancor_pool, web3, CompoundRopsten } = this.state;
+
+    const abi = require("../../../../build_compound-protocol/networks/ropsten-abi.json")
+    const CEtherAddr = CompoundRopsten["Contracts"]["cETH"]
+    const CEther = new web3.eth.Contract(abi, CEtherAddr);
+
+    const cToken = CEther.at("0x2B536482a01E620eE111747F8334B395a42A555E");
+    await cToken.methods.mint().send({from: accounts[0], value: 50});
+  }
+
   integratePoolWithLendingProtocol = async () => {
     const { accounts, new_bancor_pool, web3 } = this.state;
 
@@ -55,6 +67,8 @@ export default class NewBancorPool extends Component {
     const response_1 = await new_bancor_pool.methods.integratePoolWithLendingProtocol(receiverAddr, amountOfSmartToken).send({ from: accounts[0] })
     console.log('=== response of integratePoolWithLendingProtocol() function ===', response_1);  
   }
+
+
 
 
 
@@ -85,8 +99,10 @@ export default class NewBancorPool extends Component {
     const hotLoaderDisabled = zeppelinSolidityHotLoaderOptions.disabled;
  
     let NewBancorPool = {};
+    let CompoundRopsten = {};
     try {
       NewBancorPool = require("../../../../build/contracts/NewBancorPool.json"); // Load ABI of contract of NewBancorPool
+      CompoundRopsten = require("../../../../build_compound-protocol/networks/ropsten.json"); // Load contract of CompoundRopsten
     } catch (e) {
       console.log(e);
     }
@@ -140,7 +156,8 @@ export default class NewBancorPool extends Component {
             networkType, 
             hotLoaderDisabled,
             isMetaMask, 
-            new_bancor_pool: instanceNewBancorPool
+            new_bancor_pool: instanceNewBancorPool,
+            CompoundRopsten: CompoundRopsten  // Did artifact.require() about /compound/networks/ropsten.json
           }, () => {
             this.refreshValues(
               instanceNewBancorPool
@@ -193,6 +210,8 @@ export default class NewBancorPool extends Component {
               <Button size={'small'} mt={3} mb={2} onClick={this.getTestData}> Get TestData </Button> <br />
 
               <Button size={'small'} mt={3} mb={2} onClick={this.testFuncCallBancorNetworkContractAddr}> testFuncCallBancorNetworkContractAddr </Button> <br />
+
+              <Button size={'small'} mt={3} mb={2} onClick={this.testMintCompoundDAI}> testMintCompoundDAI</Button> <br />
 
               <Button size={'small'} mt={3} mb={2} onClick={this.integratePoolWithLendingProtocol}> Integrate Pool with Lending Protocol </Button> <br />
             </Card>
