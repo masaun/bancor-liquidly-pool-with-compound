@@ -22,6 +22,7 @@ import './bancor-protocol/converter/BancorFormula.sol';
 
 
 // Compound and CToken
+import "./compound-protocol/ICErc20.sol";
 //import "./compound-protocol/CErc20.sol";
 
 

@@ -51,11 +51,14 @@ export default class NewBancorPool extends Component {
     const { accounts, new_bancor_pool, web3, CompoundRopsten } = this.state;
 
     const abi = require("../../../../build_compound-protocol/networks/ropsten-abi.json")
-    const CEtherAddr = CompoundRopsten["Contracts"]["cETH"]
+    const CEtherAddr = CompoundRopsten.Contracts.cETH
     const CEther = new web3.eth.Contract(abi, CEtherAddr);
 
-    const cToken = CEther.at("0x2B536482a01E620eE111747F8334B395a42A555E");
-    await cToken.methods.mint().send({from: accounts[0], value: 50});
+    // const cToken = CEther.at("0x2B536482a01E620eE111747F8334B395a42A555E");
+    // await cToken.methods.mint().send({from: accounts[0], value: 50});
+
+    // const cDAI;
+    // cDAI.deployed().then((cdai) => cdai.borrowRatePerBlock.call());
   }
 
   integratePoolWithLendingProtocol = async () => {
@@ -102,7 +105,7 @@ export default class NewBancorPool extends Component {
     let CompoundRopsten = {};
     try {
       NewBancorPool = require("../../../../build/contracts/NewBancorPool.json"); // Load ABI of contract of NewBancorPool
-      CompoundRopsten = require("../../../../build_compound-protocol/networks/ropsten.json"); // Load contract of CompoundRopsten
+      CompoundRopsten = require("../../../../build_compound-protocol/networks/ropsten.json"); // Load artifact-file of CompoundRopsten
     } catch (e) {
       console.log(e);
     }
