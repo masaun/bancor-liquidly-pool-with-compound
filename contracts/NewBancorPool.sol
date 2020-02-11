@@ -115,9 +115,11 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
      * @notice - Mint cToken (Compound Token)
      * @dev - Reference from this link => https://compound.finance/developers/ctokens
      ***/
-    function mintCToken(uint256 mintAmount) public returns (bool) {
+    function mintCToken(uint256 mintAmount, address recipient) public returns (bool) {
         iErc20.approve(address(cDAItokenAddr), mintAmount);   // approve the transfer
         iCErc20.mint(mintAmount);
+
+        iCErc20.transfer(recipient, mintAmount);
 
         // [Ref]: 
         // Erc20 underlying = Erc20(_ERC20tokenAddr);  // get a handle for the underlying asset contract
