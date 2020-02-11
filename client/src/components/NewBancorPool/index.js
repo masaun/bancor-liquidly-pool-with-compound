@@ -197,6 +197,7 @@ export default class NewBancorPool extends Component {
                   borderColor={"#E8E8E8"}
             >
               <h4>New Bancor Pool</h4>
+              <h5>（Try to integrate Compound with Bancor Pool）</h5>
 
               <Image
                 alt="random unsplash image"
@@ -212,7 +213,7 @@ export default class NewBancorPool extends Component {
 
               <Button size={'small'} mt={3} mb={2} onClick={this._mintCToken}> Mint CToken </Button> <br />
 
-              <Button size={'small'} mt={3} mb={2} onClick={this._bancorPoolWithCompound}> Integrate Pool with Lending Protocol </Button> <br />
+              <Button size={'small'} mt={3} mb={2} onClick={this._bancorPoolWithCompound}> Bancor Pool With Compound（cToken） </Button> <br />
             </Card>
           </Grid>
 
