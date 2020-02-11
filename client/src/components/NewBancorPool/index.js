@@ -213,6 +213,10 @@ export default class NewBancorPool extends Component {
 
               <Button size={'small'} mt={3} mb={2} onClick={this._mintCToken}> Mint CToken </Button> <br />
 
+              <hr />
+
+              <p>i.e). If it execute a button below, it is published a SmartToken of "cDAIBNT"</p>
+
               <Button size={'small'} mt={3} mb={2} onClick={this._bancorPoolWithCompound}> Bancor Pool With Compound（cToken） </Button> <br />
             </Card>
           </Grid>
