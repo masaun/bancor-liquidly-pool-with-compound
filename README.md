@@ -7,7 +7,6 @@
 - I try to integrate Compound with Bancor Pool
   - Both of token (cToken and BNT) are conbined and published as `SmartToken`  (i.e. `cDAIBNT` )
   - Currently, I have implemented them on ropsten 
-  - Especially I have implemented them in `./contracts/NewBancorPool.sol`
 
 &nbsp;
 
