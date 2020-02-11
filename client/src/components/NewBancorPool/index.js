@@ -46,15 +46,28 @@ export default class NewBancorPool extends Component {
     console.log('=== response of testFuncCallBancorNetworkContractAddr() function ===', response_1); 
   }
 
-  integratePoolWithLendingProtocol = async () => {
+
+  _mintCToken = async () => {
     const { accounts, new_bancor_pool, web3 } = this.state;
 
-    const receiverAddr = '0x718E3ea0B8C2911C5e54Cb4b9B2075fdd87B55a7'
+    const _mintAmount = 10000000000
+    const _recipient = accounts[0]
+    let response_1 = await new_bancor_pool.methods.mintCToken(_mintAmount, _recipient).send({ from: accounts[0] })
+    console.log('=== response of mintCToken() function ===', response_1); 
+  }
+
+
+  _bancorPoolWithCompound = async () => {
+    const { accounts, new_bancor_pool, web3 } = this.state;
+
+    const receiverAddr = accounts[0]
     const amountOfSmartToken = 100
 
-    const response_1 = await new_bancor_pool.methods.integratePoolWithLendingProtocol(receiverAddr, amountOfSmartToken).send({ from: accounts[0] })
+    const response_1 = await new_bancor_pool.methods.bancorPoolWithCompound(receiverAddr, amountOfSmartToken).send({ from: accounts[0] })
     console.log('=== response of integratePoolWithLendingProtocol() function ===', response_1);  
   }
+
+
 
 
 
@@ -85,8 +98,10 @@ export default class NewBancorPool extends Component {
     const hotLoaderDisabled = zeppelinSolidityHotLoaderOptions.disabled;
  
     let NewBancorPool = {};
+    let CompoundRopsten = {};
     try {
       NewBancorPool = require("../../../../build/contracts/NewBancorPool.json"); // Load ABI of contract of NewBancorPool
+      CompoundRopsten = require("../../../../build_compound-protocol/networks/ropsten.json"); // Load artifact-file of CompoundRopsten
     } catch (e) {
       console.log(e);
     }
@@ -140,7 +155,8 @@ export default class NewBancorPool extends Component {
             networkType, 
             hotLoaderDisabled,
             isMetaMask, 
-            new_bancor_pool: instanceNewBancorPool
+            new_bancor_pool: instanceNewBancorPool,
+            CompoundRopsten: CompoundRopsten  // Did artifact.require() about /compound/networks/ropsten.json
           }, () => {
             this.refreshValues(
               instanceNewBancorPool
@@ -171,7 +187,7 @@ export default class NewBancorPool extends Component {
       <div className={styles.widgets}>
         <Grid container style={{ marginTop: 32 }}>
 
-          <Grid item xs={4}>
+          <Grid item xs={12}>
 
             <Card width={"auto"} 
                   maxWidth={"420px"} 
@@ -181,6 +197,7 @@ export default class NewBancorPool extends Component {
                   borderColor={"#E8E8E8"}
             >
               <h4>New Bancor Pool</h4>
+              <h5>（Try to integrate Compound with Bancor Pool）</h5>
 
               <Image
                 alt="random unsplash image"
@@ -194,7 +211,13 @@ export default class NewBancorPool extends Component {
 
               <Button size={'small'} mt={3} mb={2} onClick={this.testFuncCallBancorNetworkContractAddr}> testFuncCallBancorNetworkContractAddr </Button> <br />
 
-              <Button size={'small'} mt={3} mb={2} onClick={this.integratePoolWithLendingProtocol}> Integrate Pool with Lending Protocol </Button> <br />
+              <Button size={'small'} mt={3} mb={2} onClick={this._mintCToken}> Mint CToken </Button> <br />
+
+              <hr />
+
+              <p>i.e). If it execute a button below, it is published a SmartToken of "cDAIBNT"</p>
+
+              <Button size={'small'} mt={3} mb={2} onClick={this._bancorPoolWithCompound}> Bancor Pool With Compound（cToken） </Button> <br />
             </Card>
           </Grid>
 

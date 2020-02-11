@@ -22,7 +22,8 @@ import './bancor-protocol/converter/BancorFormula.sol';
 
 
 // Compound and CToken
-import "./compound-protocol/CErc20.sol";
+import "./compound-protocol/interfaces/ICErc20.sol";
+//import "./compound-protocol/CErc20.sol";
 
 
 
@@ -42,13 +43,14 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
 
     BancorFormula public bancorFormula;
 
-    IERC20Token public token;
+    IERC20Token public iErc20;  // i.e). DAI
+    ICErc20 public iCErc20;     // i.e). cDAI（cToken）from compound pool
 
     address contractRegistryAddr;
 
     address BNTtokenAddr;
-    address ERC20tokenAddr;
-    address cDAItokenAddr;   // cToken from compound pool
+    address ERC20tokenAddr;  // i.e). DAI
+    address cDAItokenAddr;   // i.e). cDAI（cToken）from compound pool
 
     address smartTokenAddr;
 
@@ -80,8 +82,9 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
 
         bancorConverterAddr = _bancorConverter;
 
-        token = IERC20Token(ERC20tokenAddr);
-        //token = IERC20Token(cDAItokenAddr);   // cDAI on Ropsten
+        iErc20 = IERC20Token(ERC20tokenAddr);   // DAI on Ropsten
+        iCErc20 = ICErc20(cDAItokenAddr);       // cDAI on Ropsten
+        //iCErc20 = ICErc20(0x2B536482a01E620eE111747F8334B395a42A555E);  // cDAI on Ropsten
 
         // Step #2: Smart Relay Token Deployment
         smartToken = SmartToken(_smartToken);
@@ -112,37 +115,45 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
      * @notice - Mint cToken (Compound Token)
      * @dev - Reference from this link => https://compound.finance/developers/ctokens
      ***/
-    function mintCToken() public returns (bool) {
-        // [In progress]: 
-        Erc20 underlying = Erc20(_ERC20tokenAddr);  // get a handle for the underlying asset contract
-        CErc20 cToken = CErc20(cDAItokenAddr);      // get a handle for the corresponding cToken contract
-        underlying.approve(address(cToken), 100);   // approve the transfer
-        assert(cToken.mint(100) == 0);              // mint the cTokens and assert there is no error
+    function mintCToken(uint256 mintAmount, address recipient) public returns (bool) {
+        iErc20.approve(address(cDAItokenAddr), mintAmount);   // approve the transfer
+        iCErc20.mint(mintAmount);
+
+        iCErc20.transfer(recipient, mintAmount);
+
+        // [Ref]: 
+        // Erc20 underlying = Erc20(_ERC20tokenAddr);  // get a handle for the underlying asset contract
+        // CErc20 cToken = CErc20(cDAItokenAddr);      // get a handle for the corresponding cToken contract
+        // underlying.approve(address(cToken), 100);   // approve the transfer
+        // assert(cToken.mint(100) == 0);              // mint the cTokens and assert there is no error
+        return BnConstants.CONFIRMED;
     }
     
 
 
 
     /***
-     * @notice - Integrate pools with lending protocols (e.g., lend pool tokens to Compound) to hedge risk for stakers 
+     * @notice - Integrate bancor pools with lending protocols (Compound) to hedge risk for stakers 
      * https://docs.bancor.network/user-guides/token-integration/how-to-create-a-bancor-liquidity-pool
      **/
-    function integratePoolWithLendingProtocol(
-        //bytes32 _contractName1, 
-        //string _contractName2,
+    function bancorPoolWithCompound(
         address receiverAddr,
         uint256 amountOfSmartToken
     ) public returns (bool) {
         // [In progress]: Integrate with lending pool of compound (cToken)
-
+        
         // Step #1: Initial Setup
-        //address token1;
-        //address token2;
+        bytes32 BNT_TOKEN = "BNT Token";
+        bytes32 CTOKEN = "compound DAI";
+        contractRegistry.registerAddress(BNT_TOKEN, BNTtokenAddr);  // BNT Token 
+        contractRegistry.registerAddress(CTOKEN, cDAItokenAddr);    // cToken (cDAI)
 
-        //token1 = contractRegistry.addressOf(_contractName1);
-        //token2 = contractRegistry.addressOf(_contractName2);
+        address registryedToken1;
+        address registryedToken2;
+        registryedToken1 = contractRegistry.addressOf(BNT_TOKEN);
+        registryedToken2 = contractRegistry.addressOf(CTOKEN);
 
-        // Step #2: Smart Relay Token Deployment
+        // Step #2: Smart Relay Token Deployment（Using smartToken of "cDAIBNT"）
         smartToken.issue(msg.sender, amountOfSmartToken);
         smartToken.transfer(receiverAddr, amountOfSmartToken);
 
@@ -150,8 +161,7 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
         uint index = 0;
         uint32 reserveRatio = 10; // The case of this, I specify 10% as percentage of ratio. (After I need to divide by 100)
         uint32 _conversionFee = 1000;  // Fee: 1,000 (0.1%)
-        bancorConverter.addConnector(token, reserveRatio, true);
-        //bancorConverter.addConnector(IERC20Token(ERC20tokenAddr), reserveRatio, true);
+        bancorConverter.addConnector(iErc20, reserveRatio, true);
         bancorConverter.setConversionFee(_conversionFee);
 
         // Step #4: Funding & Initial Supply
@@ -162,11 +172,6 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
         // Step #6: Multisig Ownership
         address _converterAddress;  // @notice - This variable is for receiving return value of createConverter() below
         // uint32 _maxConversionFee = 1;
-        // _converterAddress = bancorConverterFactory.createConverter(smartToken, 
-        //                                                            contractRegistry, 
-        //                                                            _maxConversionFee, 
-        //                                                            token, 
-        //                                                            reserveRatio);
         bancorConverter.transferOwnership(msg.sender);   // @dev - Reference from Managed.sol 
         bancorConverter.transferManagement(msg.sender);  // @dev - Reference from Managed.sol 
         _converterAddress = address(bancorConverter);

@@ -1,5 +1,8 @@
 var NewBancorPool = artifacts.require("NewBancorPool");
 
+var CompoundRopsten = require("../build_compound-protocol/networks/ropsten.json");
+
+
 /***
  * @notice - This is ContractAddress on Ropsten
  * @ref - https://support.bancor.network/hc/en-us/articles/360010410399-Ethereum-Ropsten-Network-
@@ -7,8 +10,11 @@ var NewBancorPool = artifacts.require("NewBancorPool");
  **/
 const _contractRegistry = '0x8a69A7d7507F8c4a9dD5dEB9B687B30D2b30A011'
 const _BNTtoken = '0x9C7d1F4a027C64Af951858FD0F9CB3C91e008829'
-const _ERC20token = '0xad6d458402f60fd3bd25163575031acdce07538d'  // DAI on Ropsten
-const _cDAI = '0x2b536482a01e620ee111747f8334b395a42a555e'        // cDAI on Ropsten
+const _ERC20token = CompoundRopsten['Contracts']['DAI']   // ContractAddress of DAI on Ropsten
+const _cDAI = CompoundRopsten['Contracts']['cDAI']        // ContractAddress of cDAI on Ropsten
+console.log('====== _ERC20token ===',  _ERC20token);
+console.log('====== _cDAI ===',  _cDAI);
+
 
 var SmartToken = artifacts.require("SmartToken")
 //var BancorConverter = artifacts.require("BancorConverter")
