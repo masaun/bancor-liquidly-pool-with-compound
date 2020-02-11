@@ -50,30 +50,17 @@ export default class NewBancorPool extends Component {
   _mintCToken = async () => {
     const { accounts, new_bancor_pool, web3 } = this.state;
 
-    const _mintAmount = 100;
-    let response_1 = await new_bancor_pool.methods.mintCToken(_mintAmount).send({ from: accounts[0] })
+    const _mintAmount = 100
+    const _recipient = accounts[0]
+    let response_1 = await new_bancor_pool.methods.mintCToken(_mintAmount, _recipient).send({ from: accounts[0] })
     console.log('=== response of mintCToken() function ===', response_1); 
   }
 
 
-  testMintCompoundDAI = async () => {
-    const { accounts, new_bancor_pool, web3, CompoundRopsten } = this.state;
-
-    const abi = require("../../../../build_compound-protocol/networks/ropsten-abi.json")
-    const CEtherAddr = CompoundRopsten.Contracts.cETH
-    const CEther = new web3.eth.Contract(abi, CEtherAddr);
-
-    // const cToken = CEther.at("0x2B536482a01E620eE111747F8334B395a42A555E");
-    // await cToken.methods.mint().send({from: accounts[0], value: 50});
-
-    // const cDAI;
-    // cDAI.deployed().then((cdai) => cdai.borrowRatePerBlock.call());
-  }
-
   integratePoolWithLendingProtocol = async () => {
     const { accounts, new_bancor_pool, web3 } = this.state;
 
-    const receiverAddr = '0x718E3ea0B8C2911C5e54Cb4b9B2075fdd87B55a7'
+    const receiverAddr = accounts[0]
     const amountOfSmartToken = 100
 
     const response_1 = await new_bancor_pool.methods.integratePoolWithLendingProtocol(receiverAddr, amountOfSmartToken).send({ from: accounts[0] })
@@ -224,8 +211,6 @@ export default class NewBancorPool extends Component {
               <Button size={'small'} mt={3} mb={2} onClick={this.testFuncCallBancorNetworkContractAddr}> testFuncCallBancorNetworkContractAddr </Button> <br />
 
               <Button size={'small'} mt={3} mb={2} onClick={this._mintCToken}> Mint CToken </Button> <br />
-
-              <Button size={'small'} mt={3} mb={2} onClick={this.testMintCompoundDAI}> testMintCompoundDAI</Button> <br />
 
               <Button size={'small'} mt={3} mb={2} onClick={this.integratePoolWithLendingProtocol}> Integrate Pool with Lending Protocol </Button> <br />
             </Card>
