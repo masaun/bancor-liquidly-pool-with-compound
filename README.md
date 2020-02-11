@@ -67,15 +67,15 @@ http://127.0.0.1:3000
     https://gitcoin.co/issue/bancorprotocol/contracts/337/3948  
 
 - Document of bancor protocol    
-  - How to Create a Bancor Liquidity Pool
+  - How to Create a Bancor Liquidity Pool  
     https://docs.bancor.network/user-guides/token-integration/how-to-create-a-bancor-liquidity-pool    
   - ContractAddress on Ropsten Network  
     https://support.bancor.network/hc/en-us/articles/360010410399-Ethereum-Ropsten-Network- 
-  - ContractAddress（Called by `addressOf()` ）
+  - ContractAddress（Called by `addressOf()` ）  
     https://docs.bancor.network/user-guides/network-data-and-stats/ethereum-contract-addresses
 
 - Document of compound protocol
-  - ContractAddress of cToken on Ropsten 
+  - ContractAddress of cToken on Ropsten   
     https://compound.finance/developers
 
 - Github of bancor protocol 
