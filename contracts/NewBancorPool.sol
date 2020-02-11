@@ -148,8 +148,8 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
         contractRegistry.registerAddress(BNT_TOKEN, BNTtokenAddr);  // BNT Token 
         contractRegistry.registerAddress(CTOKEN, cDAItokenAddr);    // cToken (cDAI)
 
-        address token1;
-        address token2;
+        address registryedToken1;
+        address registryedToken2;
         registryedToken1 = contractRegistry.addressOf(BNT_TOKEN);
         registryedToken2 = contractRegistry.addressOf(CTOKEN);
 
