@@ -5,15 +5,16 @@
 - This is the "Bancor Liquidly Pool with Compound".
 - This is one of system of "new bancor pool design" that integrate Compound (cToken) with Bancor Pool by using bancor and compound protocol.
 - I try to integrate Compound with Bancor Pool
-  - Both of token (cToken and BNT) are conbined and published as SmartToken (i.e. "cDAIBNT")
-  - Currently, I implement them on ropsten
+  - Both of token (cToken and BNT) are conbined and published as `SmartToken`  (i.e. `cDAIBNT` )
+  - Currently, I have implemented them on ropsten 
+  - Especially I have implemented them in `./contracts/NewBancorPool.sol`
 
 &nbsp;
 
 
 ***
 
-## 【Setup for testing system behaviir in frontend】
+## 【Setup for testing system behavior in frontend】
 ### Setup wallet by using Metamask
 1. Add MetaMask to browser (Chrome or FireFox or Opera or Brave)    
 https://metamask.io/  
