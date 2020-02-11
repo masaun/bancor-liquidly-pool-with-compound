@@ -50,8 +50,8 @@ export default class NewBancorPool extends Component {
   _mintCToken = async () => {
     const { accounts, new_bancor_pool, web3 } = this.state;
 
-    const mintAmount = 100;
-    let response_1 = await new_bancor_pool.methods.mintCToken().send({ from: accounts[0] })
+    const _mintAmount = 100;
+    let response_1 = await new_bancor_pool.methods.mintCToken(_mintAmount).send({ from: accounts[0] })
     console.log('=== response of mintCToken() function ===', response_1); 
   }
 

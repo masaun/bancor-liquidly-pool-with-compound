@@ -43,15 +43,14 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
 
     BancorFormula public bancorFormula;
 
-    IERC20Token public token;
-
-    ICErc20 public iCErc20;
+    IERC20Token public iErc20;  // i.e). DAI
+    ICErc20 public iCErc20;     // i.e). cDAI（cToken）from compound pool
 
     address contractRegistryAddr;
 
     address BNTtokenAddr;
-    address ERC20tokenAddr;  // DAI
-    address cDAItokenAddr;   // cDAI（cToken）from compound pool
+    address ERC20tokenAddr;  // i.e). DAI
+    address cDAItokenAddr;   // i.e). cDAI（cToken）from compound pool
 
     address smartTokenAddr;
 
@@ -83,10 +82,9 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
 
         bancorConverterAddr = _bancorConverter;
 
-        token = IERC20Token(ERC20tokenAddr);
-        //token = IERC20Token(cDAItokenAddr);   // cDAI on Ropsten
-
-        iCErc20 = ICErc20(0x2B536482a01E620eE111747F8334B395a42A555E);  // cDAI on Ropsten
+        iErc20 = IERC20Token(ERC20tokenAddr);   // DAI on Ropsten
+        iCErc20 = ICErc20(cDAItokenAddr);       // cDAI on Ropsten
+        //iCErc20 = ICErc20(0x2B536482a01E620eE111747F8334B395a42A555E);  // cDAI on Ropsten
 
         // Step #2: Smart Relay Token Deployment
         smartToken = SmartToken(_smartToken);
@@ -118,9 +116,10 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
      * @dev - Reference from this link => https://compound.finance/developers/ctokens
      ***/
     function mintCToken(uint256 mintAmount) public returns (bool) {
+        iErc20.approve(address(cDAItokenAddr), mintAmount);   // approve the transfer
         iCErc20.mint(mintAmount);
 
-        // [In progress]: 
+        // [Ref]: 
         // Erc20 underlying = Erc20(_ERC20tokenAddr);  // get a handle for the underlying asset contract
         // CErc20 cToken = CErc20(cDAItokenAddr);      // get a handle for the corresponding cToken contract
         // underlying.approve(address(cToken), 100);   // approve the transfer
@@ -158,7 +157,7 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
         uint index = 0;
         uint32 reserveRatio = 10; // The case of this, I specify 10% as percentage of ratio. (After I need to divide by 100)
         uint32 _conversionFee = 1000;  // Fee: 1,000 (0.1%)
-        bancorConverter.addConnector(token, reserveRatio, true);
+        bancorConverter.addConnector(iErc20, reserveRatio, true);
         //bancorConverter.addConnector(IERC20Token(ERC20tokenAddr), reserveRatio, true);
         bancorConverter.setConversionFee(_conversionFee);
 
