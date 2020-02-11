@@ -137,24 +137,21 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
      * https://docs.bancor.network/user-guides/token-integration/how-to-create-a-bancor-liquidity-pool
      **/
     function bancorPoolWithCompound(
-        bytes32 _contractName1, 
-        bytes32 _contractName2,
-        address _contractAddress1,
-        address _contractAddress2,
-
         address receiverAddr,
         uint256 amountOfSmartToken
     ) public returns (bool) {
         // [In progress]: Integrate with lending pool of compound (cToken)
-
+        
         // Step #1: Initial Setup
-        contractRegistry.registerAddress(_contractName1, _contractAddress1);  // BNT Token 
-        contractRegistry.registerAddress(_contractName2, _contractAddress2);  // cToken (cDAI)
+        bytes32 BNT_TOKEN = "BNT Token";
+        bytes32 CTOKEN = "compound DAI";
+        contractRegistry.registerAddress(BNT_TOKEN, BNTtokenAddr);  // BNT Token 
+        contractRegistry.registerAddress(CTOKEN, cDAItokenAddr);    // cToken (cDAI)
 
         address token1;
         address token2;
-        token1 = contractRegistry.addressOf(_contractName1);
-        token2 = contractRegistry.addressOf(_contractName2);
+        token1 = contractRegistry.addressOf(BNT_TOKEN);
+        token2 = contractRegistry.addressOf(CTOKEN);
 
         // Step #2: Smart Relay Token Deployment（Using smartToken of "cDAIBNT"）
         smartToken.issue(msg.sender, amountOfSmartToken);
