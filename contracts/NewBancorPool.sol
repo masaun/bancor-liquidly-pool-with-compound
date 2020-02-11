@@ -133,10 +133,10 @@ contract NewBancorPool is BnStorage, BnConstants, Managed {
 
 
     /***
-     * @notice - Integrate pools with lending protocols (e.g., lend pool tokens to Compound) to hedge risk for stakers 
+     * @notice - Integrate bancor pools with lending protocols (Compound) to hedge risk for stakers 
      * https://docs.bancor.network/user-guides/token-integration/how-to-create-a-bancor-liquidity-pool
      **/
-    function integratePoolWithLendingProtocol(
+    function bancorPoolWithCompound(
         //bytes32 _contractName1, 
         //string _contractName2,
         address receiverAddr,

@@ -57,13 +57,13 @@ export default class NewBancorPool extends Component {
   }
 
 
-  integratePoolWithLendingProtocol = async () => {
+  _bancorPoolWithCompound = async () => {
     const { accounts, new_bancor_pool, web3 } = this.state;
 
     const receiverAddr = accounts[0]
     const amountOfSmartToken = 100
 
-    const response_1 = await new_bancor_pool.methods.integratePoolWithLendingProtocol(receiverAddr, amountOfSmartToken).send({ from: accounts[0] })
+    const response_1 = await new_bancor_pool.methods.bancorPoolWithCompound(receiverAddr, amountOfSmartToken).send({ from: accounts[0] })
     console.log('=== response of integratePoolWithLendingProtocol() function ===', response_1);  
   }
 
@@ -212,7 +212,7 @@ export default class NewBancorPool extends Component {
 
               <Button size={'small'} mt={3} mb={2} onClick={this._mintCToken}> Mint CToken </Button> <br />
 
-              <Button size={'small'} mt={3} mb={2} onClick={this.integratePoolWithLendingProtocol}> Integrate Pool with Lending Protocol </Button> <br />
+              <Button size={'small'} mt={3} mb={2} onClick={this._bancorPoolWithCompound}> Integrate Pool with Lending Protocol </Button> <br />
             </Card>
           </Grid>
 
