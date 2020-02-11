@@ -196,7 +196,7 @@ export default class NewBancorPool extends Component {
                   p={20} 
                   borderColor={"#E8E8E8"}
             >
-              <h4>New Bancor Pool</h4>
+              <h4>Bancor Liquidly Pool with Compound</h4>
               <h5>（Try to integrate Compound with Bancor Pool）</h5>
 
               <Image
